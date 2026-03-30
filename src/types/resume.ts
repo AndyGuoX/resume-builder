@@ -51,6 +51,8 @@ export interface ResumeProfile {
 
 export interface ResumeDocument {
   profile: ResumeProfile
+  /** 模块区 Markdown 源码（## 模块标题、### 主标题）；解析结果写入 sections 供预览与分页 */
+  modulesMarkdown: string
   sections: ResumeSection[]
 }
 

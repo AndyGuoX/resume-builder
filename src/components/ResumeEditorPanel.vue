@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import BulletEditor from './BulletEditor.vue'
-import { createBulletNode } from '../constants/defaultResume'
-import type { ResumeDocument, ResumeSectionType } from '../types/resume'
+import type { ResumeDocument } from '../types/resume'
 import { compressImageFileToDataUrl } from '../utils/localImage'
 import {
   blockLeadingSpaceBeforeInput,
@@ -56,11 +54,6 @@ function openFilePicker() {
 }
 
 const emit = defineEmits<{
-  (event: 'add-section', type: ResumeSectionType): void
-  (event: 'remove-section', sectionIndex: number): void
-  (event: 'move-section', payload: { sectionIndex: number; direction: 'up' | 'down' }): void
-  (event: 'add-entry', sectionIndex: number): void
-  (event: 'remove-entry', payload: { sectionIndex: number; entryIndex: number }): void
   (event: 'add-personal-field'): void
   (event: 'remove-personal-field', fieldIndex: number): void
   (event: 'reset'): void
@@ -162,96 +155,26 @@ const emit = defineEmits<{
       <button type="button" class="reset-btn" @click="emit('reset')">恢复默认数据</button>
     </section>
 
-    <section class="editor-card">
-      <h3>新增模块</h3>
-      <div class="button-row">
-        <button type="button" @click="emit('add-section', 'education')">教育背景</button>
-        <button type="button" @click="emit('add-section', 'honor')">个人荣誉</button>
-        <button type="button" @click="emit('add-section', 'work')">实习经历</button>
-        <button type="button" @click="emit('add-section', 'project')">项目经历</button>
-        <button type="button" @click="emit('add-section', 'skill')">技能证书</button>
-        <button type="button" @click="emit('add-section', 'custom')">自定义模块</button>
-      </div>
-    </section>
+    <section class="editor-card modules-markdown-card">
+      <h3>经历与模块（Markdown）</h3>
+      <p class="editor-hint">
+        使用 <code>##</code> 表示<strong>模块标题</strong>（右侧 <code>h2</code> 样式不变），<code>###</code> 表示<strong>主标题</strong>（条目主标题行）。
+        <code>##</code> 与标题之间可以没有空格；行首也可缩进。模块下可以暂时没有 <code>###</code>（仅显示模块标题）。紧跟 <code>###</code> 的前两行可为时间、副标题：第一行若含年份/日期则视为时间，否则视为副标题；两行则依次为时间、副标题。要点使用 <code>-</code> 列表，子项缩进两个空格。标题、时间、副标题、要点中可用 <code>**文字**</code> 表示加粗。
+      </p>
+      <textarea
+        v-model="props.resume.modulesMarkdown"
+        class="modules-markdown-textarea"
+        spellcheck="false"
+        rows="28"
+        placeholder="## 教育背景
 
-    <section v-for="(section, sectionIndex) in props.resume.sections" :key="section.id" class="editor-card">
-      <div class="section-title">
-        <h3>模块 {{ sectionIndex + 1 }}</h3>
-        <div class="button-row">
-          <button type="button" @click="emit('move-section', { sectionIndex, direction: 'up' })">上移</button>
-          <button type="button" @click="emit('move-section', { sectionIndex, direction: 'down' })">下移</button>
-          <button type="button" class="danger" @click="emit('remove-section', sectionIndex)">删除模块</button>
-        </div>
-      </div>
+### 学校 · 学历 · 专业
+2021.09 - 2025.07
+985 · 双一流
 
-      <label>
-        模块标题
-        <input
-          :value="section.title"
-          type="text"
-          @beforeinput="blockLeadingSpaceBeforeInput"
-          @keydown="blockLeadingSpaceKeydown"
-          @input="section.title = inputTrimLeading($event)"
-          @blur="section.title = inputTrimOnBlur($event)"
-          @paste="pasteTrim((v) => (section.title = v))"
-        />
-      </label>
-
-      <div class="entries">
-        <div v-for="(entry, entryIndex) in section.entries" :key="entry.id" class="entry-editor">
-          <label>
-            主标题
-            <input
-              :value="entry.heading"
-              type="text"
-              @beforeinput="blockLeadingSpaceBeforeInput"
-              @keydown="blockLeadingSpaceKeydown"
-              @input="entry.heading = inputTrimLeading($event)"
-              @blur="entry.heading = inputTrimOnBlur($event)"
-              @paste="pasteTrim((v) => (entry.heading = v))"
-            />
-          </label>
-          <label>
-            副标题
-            <input
-              :value="entry.subheading"
-              type="text"
-              @beforeinput="blockLeadingSpaceBeforeInput"
-              @keydown="blockLeadingSpaceKeydown"
-              @input="entry.subheading = inputTrimLeading($event)"
-              @blur="entry.subheading = inputTrimOnBlur($event)"
-              @paste="pasteTrim((v) => (entry.subheading = v))"
-            />
-          </label>
-          <label>
-            时间
-            <input
-              :value="entry.period"
-              type="text"
-              @beforeinput="blockLeadingSpaceBeforeInput"
-              @keydown="blockLeadingSpaceKeydown"
-              @input="entry.period = inputTrimLeading($event)"
-              @blur="entry.period = inputTrimOnBlur($event)"
-              @paste="pasteTrim((v) => (entry.period = v))"
-            />
-          </label>
-
-          <div class="bullet-list">
-            <label>要点列表（支持子项）</label>
-            <BulletEditor :nodes="entry.bullets" />
-            <button type="button" @click="entry.bullets.push(createBulletNode(''))">新增顶层要点</button>
-          </div>
-
-          <button
-            type="button"
-            class="danger"
-            @click="emit('remove-entry', { sectionIndex, entryIndex })"
-          >
-            删除条目
-          </button>
-        </div>
-      </div>
-      <button type="button" @click="emit('add-entry', sectionIndex)">新增条目</button>
+- 要点一
+- 要点二"
+      />
     </section>
   </div>
 </template>

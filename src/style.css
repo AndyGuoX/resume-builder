@@ -1,5 +1,5 @@
 :root {
-  font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+  font-family: Noto Sans SC, sans-serif, serif; 
   color: #1f2937;
   background: #f5f5f5;
 }
@@ -69,6 +69,12 @@ input {
   cursor: not-allowed;
 }
 
+.export-toolbar .toolbar-preview {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
 .editor-panel {
   display: flex;
   flex-direction: column;
@@ -101,6 +107,25 @@ input {
   border: 1px solid #d1d5db;
   border-radius: 6px;
   padding: 8px;
+}
+
+.modules-markdown-textarea {
+  width: 100%;
+  min-height: 280px;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.modules-markdown-card code {
+  font-size: 11px;
+  background: #f3f4f6;
+  padding: 1px 4px;
+  border-radius: 4px;
 }
 
 .theme-color-row {
@@ -235,6 +260,11 @@ input {
   min-height: 100vh;
 }
 
+/* 仅预览简历：左侧隐藏，右侧全宽 */
+.app-layout--preview-only .right-panel {
+  margin-left: 0;
+}
+
 .paginate-hint {
   margin: 0 0 10px;
   color: #6b7280;
@@ -339,11 +369,11 @@ input {
   color: #9ca3af;
 }
 
-/* 模块之间：更大间距 + 隔离线（首模块无顶部分隔线） */
-.resume-section + .resume-section {
-  margin-top: 12px; 
-  padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+/* 模块之间：分隔线画在上一模块底部，避免与下一模块 ## 标题的荧光笔背景「顶上一根横线」叠在一起 */
+.resume-section:not(:last-child) {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* 模块标题：仅文字下半部分铺色（荧光笔效果），与顶部横条同色 */
@@ -378,18 +408,33 @@ input {
   gap: 12px;
 }
  
-.entry-head strong {
+.entry-heading-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.entry-heading-text strong {
+  font-weight: 700;
+}
+
+.entry-period {
+  color: #6b7280;
+  white-space: nowrap;
   font-size: 14px;
 }
 
-.entry-head span {
-  color: #6b7280;
-  white-space: nowrap;
+.entry-period strong {
+  font-weight: 700;
 }
 
 .entry-sub {
   margin: 4px 0;
   color: #374151;
+}
+
+.entry-sub strong {
+  font-weight: 600;
 }
 
 /* 每层列表符号与父级区分：实心圆 → 空心圆 → 方块 → 数字，再循环 */
@@ -421,6 +466,10 @@ input {
 
 .resume-bullet-item {
   margin-top: 3px;
+}
+
+.resume-bullet-text strong {
+  font-weight: 600;
 }
 
 .bullet-editor-tree {
@@ -468,5 +517,50 @@ input {
 
   .right-panel {
     margin-left: 0;
+  }
+}
+
+/* 系统打印 / 另存为 PDF：只出简历，隐藏编辑区与提示 */
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+  .left-panel,
+  .paginate-hint {
+    display: none !important;
+  }
+
+  .right-panel {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    min-height: auto !important;
+  }
+
+  .preview-scroll {
+    gap: 0;
+  }
+
+  .resume-page {
+    box-shadow: none !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .resume-page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  /* 主题色、荧光笔等背景在打印中保留 */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

@@ -2,12 +2,11 @@ import { ref, watch } from 'vue'
 import {
   createDefaultResume,
   createDefaultPersonalFields,
-  createEmptyEntry,
   createPersonalField,
-  createSectionByType,
 } from '../constants/defaultResume'
-import type { ResumeDocument, ResumeSectionType } from '../types/resume'
+import type { ResumeDocument } from '../types/resume'
 import { ensureResumeBulletTrees } from '../utils/bulletTree'
+import { parseModulesMarkdown, serializeModulesMarkdown } from '../utils/modulesMarkdown'
 
 const STORAGE_KEY = 'resume-template-generator-v1'
 
@@ -28,8 +27,13 @@ function normalizeResumeDocument(raw: unknown): ResumeDocument | null {
 
   // 新结构：含 personalFields 数组（可为空）
   if (Array.isArray(p.personalFields)) {
+    const sectionsRaw = Array.isArray(doc.sections) ? (doc.sections as ResumeDocument['sections']) : []
+    const mdRaw = typeof doc.modulesMarkdown === 'string' ? doc.modulesMarkdown.trim() : ''
+    const modulesMarkdown =
+      mdRaw.length > 0 ? doc.modulesMarkdown as string : serializeModulesMarkdown(sectionsRaw)
     return {
-      sections: Array.isArray(doc.sections) ? (doc.sections as ResumeDocument['sections']) : [],
+      modulesMarkdown,
+      sections: sectionsRaw,
       profile: {
         resumeTitle: String(p.resumeTitle ?? '校招通用简历模板'),
         themeColor: String(p.themeColor || '#f59e0b'),
@@ -54,8 +58,13 @@ function normalizeResumeDocument(raw: unknown): ResumeDocument | null {
     fields[phoneIdx] = { ...fields[phoneIdx], value: legacyPhone }
   }
 
+  const sectionsRaw = Array.isArray(doc.sections) ? (doc.sections as ResumeDocument['sections']) : []
+  const mdRawLegacy = typeof doc.modulesMarkdown === 'string' ? doc.modulesMarkdown.trim() : ''
+  const modulesMarkdown =
+    mdRawLegacy.length > 0 ? (doc.modulesMarkdown as string) : serializeModulesMarkdown(sectionsRaw)
   return {
-    sections: Array.isArray(doc.sections) ? (doc.sections as ResumeDocument['sections']) : [],
+    modulesMarkdown,
+    sections: sectionsRaw,
     profile: {
       resumeTitle: legacyName || '校招通用简历模板',
       themeColor: String(p.themeColor || '#f59e0b'),
@@ -103,30 +112,16 @@ export function useResumeStore() {
     { deep: true },
   )
 
-  function addSection(type: ResumeSectionType) {
-    resume.value.sections.push(createSectionByType(type))
-  }
-
-  function removeSection(sectionIndex: number) {
-    resume.value.sections.splice(sectionIndex, 1)
-  }
-
-  function moveSection(sectionIndex: number, direction: 'up' | 'down') {
-    const targetIndex = direction === 'up' ? sectionIndex - 1 : sectionIndex + 1
-    if (targetIndex < 0 || targetIndex >= resume.value.sections.length) {
-      return
-    }
-    const [section] = resume.value.sections.splice(sectionIndex, 1)
-    resume.value.sections.splice(targetIndex, 0, section)
-  }
-
-  function addEntry(sectionIndex: number) {
-    resume.value.sections[sectionIndex]?.entries.push(createEmptyEntry())
-  }
-
-  function removeEntry(sectionIndex: number, entryIndex: number) {
-    resume.value.sections[sectionIndex]?.entries.splice(entryIndex, 1)
-  }
+  /** Markdown 变更时同步解析为 sections，供右侧预览与分页（DOM 结构不变） */
+  watch(
+    () => resume.value.modulesMarkdown,
+    (md) => {
+      const prevSections = resume.value.sections
+      resume.value.sections = parseModulesMarkdown(md, prevSections)
+      ensureResumeBulletTrees(resume.value)
+    },
+    { immediate: true },
+  )
 
   function addPersonalField() {
     resume.value.profile.personalFields.push(createPersonalField('自定义', ''))
@@ -142,11 +137,6 @@ export function useResumeStore() {
 
   return {
     resume,
-    addSection,
-    removeSection,
-    moveSection,
-    addEntry,
-    removeEntry,
     addPersonalField,
     removePersonalField,
     resetToDefault,

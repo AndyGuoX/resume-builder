@@ -1,16 +1,12 @@
-import type { BulletNode, ResumeDocument, ResumeSection, ResumeSectionType } from '../types/resume'
+import type { ResumeDocument, ResumeSection, ResumeSectionType } from '../types/resume'
 import type { PersonalInfoField } from '../types/resume'
+import { createBulletNode, generateResumeId } from '../utils/bulletNodes'
+import { serializeModulesMarkdown } from '../utils/modulesMarkdown'
+
+export { createBulletNode }
 
 function generateId(prefix: string): string {
-  return `${prefix}-${Math.random().toString(36).slice(2, 10)}`
-}
-
-export function createBulletNode(text = '', children: BulletNode[] = []): BulletNode {
-  return {
-    id: generateId('bl'),
-    text,
-    children: children.length ? [...children] : [],
-  }
+  return generateResumeId(prefix)
 }
 
 export function createEmptyEntry() {
@@ -63,14 +59,7 @@ export function createSectionByType(type: ResumeSectionType): ResumeSection {
 }
 
 export function createDefaultResume(): ResumeDocument {
-  return {
-    profile: {
-      resumeTitle: '校招通用简历模板',
-      avatarUrl: '',
-      themeColor: '#f59e0b',
-      personalFields: createDefaultPersonalFields(),
-    },
-    sections: [
+  const sections: ResumeSection[] = [
       {
         id: generateId('section'),
         type: 'education',
@@ -135,6 +124,15 @@ export function createDefaultResume(): ResumeDocument {
           },
         ],
       },
-    ],
+  ]
+  return {
+    profile: {
+      resumeTitle: '校招通用简历模板',
+      avatarUrl: '',
+      themeColor: '#f59e0b',
+      personalFields: createDefaultPersonalFields(),
+    },
+    modulesMarkdown: serializeModulesMarkdown(sections),
+    sections,
   }
 }

@@ -179,10 +179,35 @@ export function paginateSectionsByMeasurement(
     const pendingEntries = [...section.entries]
     let sectionChunkIndex = 1
 
+    // 无 ### 条目时 entries 为空：仍输出仅含 h2 的模块，避免整块被分页逻辑丢弃
+    if (pendingEntries.length === 0) {
+      const sectionTitle = section.title
+      const shouldShowTitle = true
+      const titleHeight = shouldShowTitle ? options.measureSectionTitle(sectionTitle) : 0
+      let sectionStartGap = currentPageSections.length ? options.sectionGap : 0
+      let sectionStartHeight = titleHeight + sectionStartGap
+
+      if (usedHeight + sectionStartHeight > currentPageLimit() && currentPageSections.length) {
+        pushPage()
+        sectionStartGap = currentPageSections.length ? options.sectionGap : 0
+        sectionStartHeight = titleHeight + sectionStartGap
+      }
+
+      currentPageSections.push({
+        ...section,
+        title: sectionTitle,
+        showTitle: shouldShowTitle,
+        entries: [],
+      })
+      usedHeight += sectionStartHeight
+      continue
+    }
+
     while (pendingEntries.length) {
       const isSectionFirstChunk = sectionChunkIndex === 1
       const sectionTitle = section.title
-      const shouldShowTitle = pageNumber === 1 && isSectionFirstChunk
+      // 仅「同一模块跨页续块」隐藏 h2；新模块从第 2 页起也必须显示模块标题
+      const shouldShowTitle = isSectionFirstChunk
       const titleHeight = shouldShowTitle ? options.measureSectionTitle(sectionTitle) : 0
       const sectionStartGap = currentPageSections.length ? options.sectionGap : 0
       const sectionStartHeight = titleHeight + sectionStartGap
@@ -251,9 +276,8 @@ export function paginateSectionsByMeasurement(
         usedHeight += chunkHeight
       }
 
-      if (pendingEntries.length) {
-        pushPage()
-      }
+      // 同一模块内多条目 / 拆分续块：只要本页还能放下下一块（由下一轮循环开头处 usedHeight + sectionStartHeight 判断），
+      // 就不应在此强制换页；此前无条件 pushPage 会导致「上一 ### 与下一 ### 之间本页有大块空白仍另起一页」。
       sectionChunkIndex += 1
     }
   }

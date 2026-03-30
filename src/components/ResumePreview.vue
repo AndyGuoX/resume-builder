@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BulletList from './BulletList.vue'
+import FormattedText from './FormattedText.vue'
 import type { PaginatedPage } from '../types/resume'
 import type { ResumeProfile } from '../types/resume'
 
@@ -15,7 +16,7 @@ defineProps<{
       <header v-if="page.pageNumber === 1" class="resume-header">
         <div class="resume-header-inner">
           <div class="resume-header-main">
-            <h1 class="resume-doc-title">{{ profile.resumeTitle }}</h1>
+            <h1 class="resume-doc-title"><FormattedText :text="profile.resumeTitle" /></h1>
             <div class="personal-info-grid">
               <div
                 v-for="field in profile.personalFields"
@@ -35,13 +36,18 @@ defineProps<{
       </header>
 
       <section v-for="section in page.sections" :key="section.id + section.title" class="resume-section">
-        <h2 v-if="section.showTitle !== false">{{ section.title }}</h2>
+        <h2 v-if="section.showTitle !== false"><FormattedText :text="section.title" /></h2>
         <div v-for="entry in section.entries" :key="entry.id" class="resume-entry">
-          <div v-if="entry.showMeta !== false" class="entry-head">
-            <strong>{{ entry.heading }}</strong>
-            <span>{{ entry.period }}</span>
+          <div
+            v-if="entry.showMeta !== false && (entry.heading.trim() || entry.period.trim())"
+            class="entry-head"
+          >
+            <span class="entry-heading-text"><FormattedText :text="entry.heading" /></span>
+            <span class="entry-period"><FormattedText :text="entry.period" /></span>
           </div>
-          <p v-if="entry.showMeta !== false && entry.subheading" class="entry-sub">{{ entry.subheading }}</p>
+          <p v-if="entry.showMeta !== false && entry.subheading" class="entry-sub">
+            <FormattedText :text="entry.subheading" />
+          </p>
           <BulletList :nodes="entry.bullets" />
         </div>
       </section>

@@ -1,5 +1,6 @@
-import { createBulletNode } from '../constants/defaultResume'
+import { createBulletNode } from './bulletNodes'
 import type { BulletNode, ResumeDocument } from '../types/resume'
+import { inlineBoldToHtml } from './inlineBold'
 
 /** 将要点树渲染为与预览一致的嵌套 ul/li HTML（用于测量高度）；depth 与 BulletList 层级 class 一致 */
 export function bulletNodesToHtml(nodes: BulletNode[], depth = 0): string {
@@ -12,18 +13,10 @@ export function bulletNodesToHtml(nodes: BulletNode[], depth = 0): string {
       const childHtml = node.children.length ? bulletNodesToHtml(node.children, childDepth) : ''
       const depthClass = `resume-bullet-tree resume-bullet-tree--depth-${childDepth % 4}`
       const nested = childHtml ? `<ul class="${depthClass}">${childHtml}</ul>` : ''
-      return `<li>${escapeHtml(node.text)}${nested}</li>`
+      return `<li>${inlineBoldToHtml(node.text)}${nested}</li>`
     })
     .join('')
   return items
-}
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
 }
 
 /** 兼容旧版 string[] 要点 */

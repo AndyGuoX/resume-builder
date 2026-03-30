@@ -1,5 +1,6 @@
 import type { ResumeEntry, ResumeProfile } from '../types/resume'
 import { bulletNodesToHtml } from './bulletTree'
+import { inlineBoldToHtml } from './inlineBold'
 
 const PAGE_WIDTH = 794
 const PAGE_HEIGHT = 1123
@@ -37,7 +38,7 @@ export function createDomMeasurer() {
     main.className = 'resume-header-main'
     const h1 = document.createElement('h1')
     h1.className = 'resume-doc-title'
-    h1.textContent = profile.resumeTitle || ''
+    h1.innerHTML = inlineBoldToHtml(profile.resumeTitle || '')
     const grid = document.createElement('div')
     grid.className = 'personal-info-grid'
     profile.personalFields.forEach((f) => {
@@ -80,7 +81,7 @@ export function createDomMeasurer() {
   const measureSectionTitle = (title: string): number => {
     const section = document.createElement('section')
     section.className = 'resume-section'
-    section.innerHTML = `<h2>${title || ''}</h2>`
+    section.innerHTML = `<h2>${inlineBoldToHtml(title || '')}</h2>`
     root.appendChild(section)
     const heading = section.querySelector('h2') as HTMLElement
     const height = getOuterHeight(heading)
@@ -114,8 +115,8 @@ export function createDomMeasurer() {
     const bulletsHtml = bulletNodesToHtml(entry.bullets)
     const showMeta = entry.showMeta !== false
     wrapper.innerHTML = `
-      ${showMeta ? `<div class="entry-head"><strong>${entry.heading || ''}</strong><span>${entry.period || ''}</span></div>` : ''}
-      ${showMeta && entry.subheading ? `<p class="entry-sub">${entry.subheading}</p>` : ''}
+      ${showMeta ? `<div class="entry-head"><span class="entry-heading-text">${inlineBoldToHtml(entry.heading || '')}</span><span class="entry-period">${inlineBoldToHtml(entry.period || '')}</span></div>` : ''}
+      ${showMeta && entry.subheading ? `<p class="entry-sub">${inlineBoldToHtml(entry.subheading)}</p>` : ''}
       <ul class="resume-bullet-tree resume-bullet-tree--depth-0">${bulletsHtml || ''}</ul>
     `
     root.appendChild(wrapper)

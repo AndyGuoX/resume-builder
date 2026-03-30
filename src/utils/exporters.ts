@@ -1,10 +1,10 @@
 import { saveAs } from 'file-saver'
-import html2canvas from 'html2canvas'
-import { toPng } from 'html-to-image'
+import { toCanvas, toPng } from 'html-to-image'
 import { jsPDF } from 'jspdf'
 import JSZip from 'jszip'
 import { asBlob } from 'html-docx-js-typescript'
 
+/** 与 PNG 导出一致，用 html-to-image 光栅化，文字与列表符号通常比 html2canvas 更稳 */
 const CAPTURE_SCALE = 2
 
 /** 将简历主标题转为安全、可用的文件名（无扩展名） */
@@ -22,6 +22,30 @@ function getPageElements(previewRoot: HTMLElement): HTMLElement[] {
   return Array.from(previewRoot.querySelectorAll<HTMLElement>('.resume-page'))
 }
 
+/** 按画布宽高比放入 A4，避免强行 210×297 拉伸导致文字与列表符号变形 */
+function mmRectFitA4(canvas: HTMLCanvasElement): { x: number; y: number; w: number; h: number } {
+  const pageW = 210
+  const pageH = 297
+  const cw = canvas.width
+  const ch = canvas.height
+  if (!cw || !ch) {
+    return { x: 0, y: 0, w: pageW, h: pageH }
+  }
+  const r = cw / ch
+  let w = pageW
+  let h = pageW / r
+  if (h > pageH) {
+    h = pageH
+    w = pageH * r
+  }
+  return {
+    x: (pageW - w) / 2,
+    y: (pageH - h) / 2,
+    w,
+    h,
+  }
+}
+
 export async function exportPdf(previewRoot: HTMLElement, fileBaseName: string) {
   const pages = getPageElements(previewRoot)
   if (!pages.length) {
@@ -35,17 +59,17 @@ export async function exportPdf(previewRoot: HTMLElement, fileBaseName: string) 
   })
 
   for (let index = 0; index < pages.length; index += 1) {
-    // 逐页截图再写入 PDF，可确保多页样式与右侧预览一致
-    const canvas = await html2canvas(pages[index], {
-      scale: CAPTURE_SCALE,
-      useCORS: true,
+    const canvas = await toCanvas(pages[index], {
+      pixelRatio: CAPTURE_SCALE,
       backgroundColor: '#ffffff',
+      cacheBust: true,
     })
     const imageData = canvas.toDataURL('image/png')
     if (index > 0) {
       pdf.addPage('a4', 'p')
     }
-    pdf.addImage(imageData, 'PNG', 0, 0, 210, 297)
+    const { x, y, w, h } = mmRectFitA4(canvas)
+    pdf.addImage(imageData, 'PNG', x, y, w, h)
   }
 
   pdf.save(`${fileBaseName}.pdf`)
