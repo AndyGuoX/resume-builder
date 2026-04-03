@@ -1,0 +1,616 @@
+:root {
+  font-family:
+    Noto Sans SC,
+    sans-serif,
+    serif;
+  color: #1f2937;
+  background: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f3f4f6;
+  font-size: 14px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#app {
+  width: 100%;
+}
+
+/* 桌面：左侧表单固定视口左侧，右侧独立滚动；窄屏见文末 media query */
+:root {
+  --left-panel-width: min(480px, 42vw);
+}
+
+.app-layout {
+  min-height: 100vh;
+  display: block;
+}
+
+.left-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  width: var(--left-panel-width);
+  height: 100vh;
+  border-right: 1px solid #d1d5db;
+  background: #ffffff;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.06);
+}
+
+.export-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.export-toolbar button {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: #ffffff;
+  background: #111827;
+  cursor: pointer;
+}
+
+.export-toolbar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.export-toolbar .toolbar-preview {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.editor-card {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editor-card h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.editor-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.editor-card input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.modules-markdown-textarea {
+  width: 100%;
+  min-height: 280px;
+  font-family:
+    ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.modules-markdown-card code {
+  font-size: 11px;
+  background: #f3f4f6;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.theme-color-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.theme-color-picker {
+  width: 64px;
+  height: 36px;
+  padding: 4px !important;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.button-row button,
+.editor-card > button,
+.bullet-list > button,
+.reset-btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.danger {
+  color: #b91c1c;
+}
+
+.entry-editor {
+  border: 1px dashed #cbd5e1;
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bullet-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editor-hint {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.avatar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avatar-field-label {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.avatar-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.avatar-field-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.avatar-preview-wrap {
+  margin-top: 4px;
+}
+
+.avatar-preview-thumb {
+  width: 80px;
+  height: 106px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  display: block;
+}
+
+.personal-field-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+  padding: 8px;
+  border: 1px dashed #e5e7eb;
+  border-radius: 6px;
+}
+
+.personal-field-editor .personal-field-remove {
+  margin-bottom: 2px;
+}
+
+.right-panel {
+  margin-left: var(--left-panel-width);
+  padding: 24px;
+  overflow: auto;
+  min-height: 100vh;
+}
+
+/* 仅预览简历：左侧隐藏，右侧全宽 */
+.app-layout--preview-only .right-panel {
+  margin-left: 0;
+}
+
+.paginate-hint {
+  margin: 0 0 10px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.preview-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+}
+
+.resume-page {
+  width: 794px;
+  min-height: 1123px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  padding: 5mm 10mm 20mm 10mm;
+  margin-bottom: 15mm;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.resume-header {
+  margin-bottom: 20px;
+  border-top: 8px solid var(--resume-theme-color, #f59e0b);
+  padding-top: 16px;
+}
+
+.resume-header-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.resume-header-main {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.resume-doc-title {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.personal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+.personal-info-cell {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #374151;
+}
+
+.personal-info-label {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.personal-info-label::after {
+  content: "：";
+}
+
+.personal-info-value {
+  word-break: break-word;
+}
+
+.resume-header-photo {
+  width: 80px;
+  height: 106px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.resume-header-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.resume-header-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 106px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* 模块之间：分隔线画在上一模块底部，避免与下一模块 ## 标题的荧光笔背景「顶上一根横线」叠在一起 */
+.resume-section:not(:last-child) {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* 模块标题：仅文字下半部分铺色（荧光笔效果），与顶部横条同色 */
+.resume-section h2 {
+  display: inline;
+  margin: 0 0 4px;
+  padding: 0 2px 2px;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #111827;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 50%,
+    var(--resume-theme-color, #f59e0b) 50%,
+    var(--resume-theme-color, #f59e0b) 100%
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.resume-entry {
+  margin-top: 8px;
+}
+
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.entry-heading-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.entry-heading-text strong {
+  font-weight: 700;
+}
+
+.entry-period {
+  color: #6b7280;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.entry-period strong {
+  font-weight: 700;
+}
+
+.entry-sub {
+  margin: 4px 0;
+  color: #374151;
+}
+
+.entry-sub strong {
+  font-weight: 600;
+}
+
+.entry-tags {
+  margin: 4px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* 每层列表符号与父级区分：实心圆 → 空心圆 → 方块 → 数字，再循环 */
+.resume-bullet-tree {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.resume-bullet-tree--depth-0 {
+  list-style-type: disc;
+}
+
+.resume-bullet-tree--depth-1 {
+  list-style-type: circle;
+}
+
+.resume-bullet-tree--depth-2 {
+  list-style-type: square;
+}
+
+.resume-bullet-tree--depth-3 {
+  list-style-type: decimal;
+}
+
+.resume-bullet-tree .resume-bullet-tree {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.resume-bullet-item {
+  margin-top: 3px;
+}
+
+.resume-bullet-text strong {
+  font-weight: 600;
+}
+
+.bullet-subheading {
+  font-weight: 600;
+  color: #111827;
+}
+
+.bullet-content {
+  color: #374151;
+}
+
+.resume-bullet-text > .bullet-subheading + .bullet-content::before {
+  content: ' ';
+}
+
+.resume-tag {
+  display: inline-block;
+  margin: 0 2px;
+  font-size: 0.9em;
+  font-weight: 500;
+  line-height: 1.4;
+  background: var(--tag-bg-color, #fef3c7);
+  color: var(--tag-text-color, #b45309);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+@media print {
+  .resume-tag {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+@media (max-width: 1360px) {
+  :root {
+    --left-panel-width: 0px;
+  }
+
+  .left-panel {
+    position: relative;
+    left: auto;
+    top: auto;
+    z-index: auto;
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    box-shadow: none;
+  }
+
+  .right-panel {
+    margin-left: 0;
+  }
+}
+
+@page {
+  size: 210mm 1123px;
+  margin: 0 0 15mm 0;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    height: 1123px;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .left-panel,
+  .paginate-hint,
+  .toolbar,
+  .export-toolbar {
+    display: none !important;
+  }
+
+  .right-panel {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    min-height: auto !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+
+  .preview-root-inner {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+  }
+
+  .app-layout,
+  #app {
+    min-height: auto !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+
+  .preview-scroll {
+    gap: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .resume-page {
+    width: 210mm !important;
+    min-height: 1123px !important;
+    max-height: 1123px !important;
+    margin: 0 !important;
+    padding: 5mm 10mm 20mm 10mm !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+
+  .resume-page:not(:last-child) {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}
