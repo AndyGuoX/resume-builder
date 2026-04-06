@@ -56,7 +56,7 @@ const props = defineProps<{
           <p v-if="entry.showMeta !== false && entry.subheading" class="entry-sub">
             <FormattedText :text="entry.subheading" :theme-color="profile.themeColor" />
           </p>
-          <BulletList :nodes="entry.bullets" :theme-color="profile.themeColor" />
+          <BulletList v-if="entry.bullets.length && entry.bullets.some(b => b.content || b.subheading || b.children.length)" :nodes="entry.bullets" :theme-color="profile.themeColor" />
         </div>
       </section>
     </article>

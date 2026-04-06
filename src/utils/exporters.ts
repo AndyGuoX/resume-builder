@@ -24,14 +24,14 @@ function getPageElements(previewRoot: HTMLElement): HTMLElement[] {
 
 function mmRectFitA4(canvas: HTMLCanvasElement): { x: number; y: number; w: number; h: number } {
   const pageW = 210
-  const pageH = 1123
-  const mmPerPx = 25.4 / 96
-  const pageH_mm = pageH * mmPerPx
+  const pageH_mm = 297
+
   const cw = canvas.width
   const ch = canvas.height
   if (!cw || !ch) {
     return { x: 0, y: 0, w: pageW, h: pageH_mm }
   }
+
   const r = cw / ch
   let w = pageW
   let h = pageW / r
@@ -110,7 +110,7 @@ function buildWordHtml(previewRoot: HTMLElement): string {
   const styleContent = `
     <style>
       body { background:#ffffff; font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
-      .resume-page { width: 210mm; min-height: 1123px; box-sizing: border-box; page-break-after: always; }
+      .resume-page { width: 210mm; height: 1123px; box-sizing: border-box; page-break-after: always; }
       .resume-page:last-child { page-break-after: auto; }
     </style>
   `

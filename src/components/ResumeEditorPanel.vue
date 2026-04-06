@@ -159,7 +159,7 @@ const emit = defineEmits<{
       <h3>经历与模块（Markdown）</h3>
       <p class="editor-hint">
         使用 <code>##</code> 表示<strong>模块标题</strong>（右侧 <code>h2</code> 样式不变），<code>###</code> 表示<strong>主标题</strong>（条目主标题行）。
-        <code>##</code> 与标题之间可以没有空格；行首也可缩进。模块下可以暂时没有 <code>###</code>（仅显示模块标题）。紧跟 <code>###</code> 的前两行可为时间、副标题：第一行若含年份/日期则视为时间，否则视为副标题；两行则依次为时间、副标题。要点使用 <code>-</code> 列表，子项缩进两个空格。标题、时间、副标题、要点中可用 <code>**文字**</code> 表示加粗。
+        <code>##</code> 与标题之间可以没有空格；行首也可缩进。模块下可以暂时没有 <code>###</code>（仅显示模块标题），<strong>也可直接写副标题</strong>。紧跟 <code>###</code> 的前两行可为时间、副标题：第一行若含年份/日期则视为时间，否则视为副标题；两行则依次为时间、副标题。<strong>题下也可以有副标题</strong>。要点使用 <code>-</code> 列表，子项缩进两个空格。标题、时间、副标题、要点中可用 <code>**文字**</code> 表示加粗。
       </p>
       <textarea
         v-model="props.resume.modulesMarkdown"
