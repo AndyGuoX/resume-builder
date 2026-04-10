@@ -56,16 +56,10 @@ function indentedLinesToBulletTree(rows: { indent: number; text: string }[]): Bu
   const roots: BulletNode[] = []
   const lastAtDepth: BulletNode[] = []
 
-  const hasMarkdown = (text: string) => text.includes('**') || text.includes('{')
-
   for (const row of rows) {
     let subheading = ''
     let content = row.text
-    if (row.text.includes(' ') && !hasMarkdown(row.text)) {
-      const parts = row.text.split(' ')
-      subheading = parts[0] ?? ''
-      content = parts.slice(1).join(' ')
-    }
+    // 列表项中的普通空格不再触发「子标题 + 正文」拆分，避免出现误加粗。
     const node = createBulletNode(subheading, content, [])
     const d = row.indent
 

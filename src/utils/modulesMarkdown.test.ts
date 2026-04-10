@@ -87,4 +87,16 @@ describe('modulesMarkdown', () => {
     expect(e?.bullets[0]?.content).toBe('要点一')
     expect(e?.bullets[0]?.children[0]?.content).toBe('子要点')
   })
+
+  it('列表项中的空格不应触发子标题拆分（避免误加粗）', () => {
+    const md = `## 测试模块
+
+### 某公司
+- 负责 模块 设计 与 实现`
+
+    const sections = parseModulesMarkdown(md)
+    const bullet = sections[0]?.entries[0]?.bullets[0]
+    expect(bullet?.subheading).toBe('')
+    expect(bullet?.content).toBe('负责 模块 设计 与 实现')
+  })
 })

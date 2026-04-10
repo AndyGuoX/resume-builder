@@ -4,7 +4,7 @@ export interface InlineSegment {
   tag?: boolean
 }
 
-/** 将 `**加粗**` 解析为片段（内容中不含 `*`；未闭合的 `**` 保留原文） */
+/** 将 `**加粗**` 解析为片段（仅 `**...**` 且内容含非空白；未闭合保留原文） */
 export function parseInlineBold(source: string): InlineSegment[] {
   if (!source) {
     return [{ text: '' }]
@@ -18,7 +18,13 @@ export function parseInlineBold(source: string): InlineSegment[] {
       segments.push({ text: source.slice(lastIndex, m.index) })
     }
     if (m[2] !== undefined) {
-      segments.push({ text: m[2], bold: true })
+      const boldContent = m[2]
+      // 仅当 **...** 中存在非空白字符时才视为加粗，避免空格触发
+      if (boldContent.trim().length > 0) {
+        segments.push({ text: boldContent, bold: true })
+      } else {
+        segments.push({ text: m[0] })
+      }
     } else if (m[4] !== undefined) {
       segments.push({ text: m[4], tag: true })
     }
