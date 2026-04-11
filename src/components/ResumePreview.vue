@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import BulletList from './BulletList.vue'
 import FormattedText from './FormattedText.vue'
-import type { PaginatedPage } from '../types/resume'
-import type { ResumeProfile } from '../types/resume'
+import type { ResumeProfile, ResumeSection } from '../types/resume'
 
-const props = defineProps<{
+defineProps<{
   profile: ResumeProfile
-  pages: PaginatedPage[]
+  sections: ResumeSection[]
 }>()
 </script>
 
 <template>
   <div class="preview-scroll" :style="{ '--resume-theme-color': profile.themeColor || '#f59e0b' }">
-    <article v-for="page in pages" :key="page.pageNumber" class="resume-page">
-      <header v-if="page.pageNumber === 1" class="resume-header">
+    <article class="resume-page">
+      <header class="resume-header">
         <div class="resume-header-inner">
           <div class="resume-header-main">
             <h1 class="resume-doc-title"><FormattedText :text="profile.resumeTitle" :theme-color="profile.themeColor" /></h1>
@@ -35,7 +34,7 @@ const props = defineProps<{
         </div>
       </header>
 
-      <section v-for="section in page.sections" :key="section.id + section.title" class="resume-section">
+      <section v-for="section in sections" :key="section.id" class="resume-section">
         <h2 v-if="section.showTitle !== false"><FormattedText :text="section.title" :theme-color="profile.themeColor" /></h2>
         <div v-for="entry in section.entries" :key="entry.id" class="resume-entry">
           <div

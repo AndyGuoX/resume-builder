@@ -269,12 +269,6 @@ input {
   margin-left: 0;
 }
 
-.paginate-hint {
-  margin: 0 0 10px;
-  color: #6b7280;
-  font-size: 13px;
-}
-
 .preview-scroll {
   display: flex;
   flex-direction: column;
@@ -284,13 +278,14 @@ input {
 
 .resume-page {
   width: 794px;
-  height: 1123px;
+  min-height: 0;
+  height: auto;
   background: #ffffff;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   padding: 5mm 10mm 20mm 10mm;
-  margin-bottom: 15mm;
+  margin-bottom: 24px;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .resume-header {
@@ -540,15 +535,23 @@ input {
   }
 }
 
+/* 左右与第一页顶边保持 0，由 .resume-page 的 padding 控制；第 2 页起增加顶边距；各页底边距统一，避免仅首页底贴边 */
 @page {
   size: A4;
   margin: 0;
+  margin-top: 10mm;
+  margin-bottom: 10mm;
+}
+
+@page :first {
+  margin-top: 0;
 }
 
 @media print {
   html,
   body {
     width: 210mm;
+    max-width: 100%;
     height: auto;
     min-height: 100vh;
     margin: 0 !important;
@@ -559,7 +562,6 @@ input {
   }
 
   .left-panel,
-  .paginate-hint,
   .toolbar,
   .export-toolbar {
     display: none !important;
@@ -595,17 +597,14 @@ input {
 
   .resume-page {
     width: 210mm !important;
-    height: 1123px !important;
+    max-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
     margin: 0 !important;
     padding: 5mm 10mm 20mm 10mm !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
-    overflow: hidden !important;
-  }
-
-  .resume-page:not(:last-child) {
-    page-break-after: always !important;
-    break-after: page !important;
+    overflow: visible !important;
   }
 
   * {
