@@ -96,6 +96,58 @@ describe('paginateSectionsByMeasurement', () => {
     expect(flattenedEntries.slice(1).every((entry) => entry.showMeta === false)).toBe(true)
   })
 
+  it('本页尾部空间不足另起一页时，新模块首块仍应显示 h2（showTitle）', () => {
+    const sections: ResumeSection[] = [
+      {
+        id: 's-work',
+        type: 'work',
+        title: '工作经历',
+        entries: [
+          {
+            id: 'e-w',
+            heading: '某公司',
+            subheading: '',
+            period: '',
+            bullets: [createBulletNode('一条要点')],
+          },
+        ],
+      },
+      {
+        id: 's-proj',
+        type: 'project',
+        title: '项目经历',
+        entries: [
+          {
+            id: 'e-p',
+            heading: '某项目',
+            subheading: '',
+            period: '',
+            bullets: [createBulletNode('单条不可拆分')],
+          },
+        ],
+      },
+    ]
+
+    const measureEntryProject = (entry: ResumeEntry) => {
+      if (entry.id === 'e-w') {
+        return 70
+      }
+      return 50
+    }
+
+    const pages = paginateSectionsByMeasurement(sections, {
+      firstPageLimit: 100,
+      nextPageLimit: 100,
+      sectionGap: 5,
+      measureSectionTitle,
+      measureEntry: measureEntryProject,
+    })
+
+    const projSection = pages.flatMap((p) => p.sections).find((s) => s.title === '项目经历')
+    expect(projSection).toBeDefined()
+    expect(projSection?.showTitle).toBe(true)
+  })
+
   it('新模块从第 2 页开始时仍应显示该模块 h2（showTitle）', () => {
     const sections: ResumeSection[] = [
       {

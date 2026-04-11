@@ -274,11 +274,12 @@ export function paginateSectionsByMeasurement(
           entries: chunkEntries,
         })
         usedHeight += chunkHeight
+        // 仅在实际推入块后递增：若因「当前页放不下首条且已 pushPage」而空块退出，下一轮仍是该模块首块，须保留 h2
+        sectionChunkIndex += 1
       }
 
       // 同一模块内多条目 / 拆分续块：只要本页还能放下下一块（由下一轮循环开头处 usedHeight + sectionStartHeight 判断），
       // 就不应在此强制换页；此前无条件 pushPage 会导致「上一 ### 与下一 ### 之间本页有大块空白仍另起一页」。
-      sectionChunkIndex += 1
     }
   }
 
