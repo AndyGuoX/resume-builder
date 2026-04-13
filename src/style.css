@@ -542,12 +542,12 @@ input {
   }
 }
 
-/* 左右与第一页顶边保持 0，由 .resume-page 的 padding 控制；第 2 页起增加顶边距；各页底边距统一，避免仅首页底贴边 */
+/* 续页仅保留顶部页边距，兼顾分页留白与避免空白尾页 */
 @page {
   size: A4;
   margin: 0;
-  margin-top: 10mm;
-  margin-bottom: 10mm;
+  margin-top: 6mm;
+  margin-bottom: 2mm;
 }
 
 @page :first {
@@ -560,7 +560,7 @@ input {
     width: 210mm;
     max-width: 100%;
     height: auto;
-    min-height: 100vh;
+    min-height: auto;
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
@@ -598,8 +598,7 @@ input {
 
   .preview-scroll {
     gap: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
+    display: block !important;
   }
 
   .resume-page {
@@ -608,10 +607,15 @@ input {
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
-    padding: 5mm 10mm 20mm 10mm !important;
+    padding: 5mm 10mm 8mm 10mm !important;
     box-sizing: border-box !important;
     box-shadow: none !important;
     overflow: visible !important;
+  }
+
+  /* 打印时压缩末尾冗余空隙，降低“临界溢出触发空白页”的概率 */
+  .resume-header {
+    margin-bottom: 16px !important;
   }
 
   * {
