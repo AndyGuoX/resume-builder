@@ -1,0 +1,70 @@
+:root {
+  font-family: 'Noto Sans SC', sans-serif, serif;
+  color: #1f2937;
+  background: #f5f5f5;
+
+  --left-panel-width: min(480px, 42vw);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f3f4f6;
+  font-size: 14px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#app {
+  width: 100%;
+}
+
+@media (width <= 1360px) {
+  :root {
+    --left-panel-width: 0px;
+  }
+}
+
+@page {
+  size: a4;
+  margin: 0;
+  margin-top: 6mm;
+  margin-bottom: 2mm;
+}
+
+@page :first {
+  margin-top: 0;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    max-width: 100%;
+    height: auto;
+    min-height: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #app {
+    min-height: auto !important;
+    height: auto !important;
+    width: 100% !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}

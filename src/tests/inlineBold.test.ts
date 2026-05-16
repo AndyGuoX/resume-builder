@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { inlineBoldToHtml, parseInlineBold } from './inlineBold'
+import { inlineBoldToHtml, parseInlineBold } from '../utils/inlineBold'
 
 describe('inlineBold', () => {
   it('解析 **加粗**', () => {
@@ -12,11 +12,7 @@ describe('inlineBold', () => {
 
   it('多处加粗', () => {
     const s = parseInlineBold('**A**与**B**')
-    expect(s).toEqual([
-      { text: 'A', bold: true },
-      { text: '与' },
-      { text: 'B', bold: true },
-    ])
+    expect(s).toEqual([{ text: 'A', bold: true }, { text: '与' }, { text: 'B', bold: true }])
   })
 
   it('无 ** 时整段为普通文本', () => {

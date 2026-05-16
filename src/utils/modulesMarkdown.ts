@@ -39,7 +39,9 @@ function bulletsToMarkdownLines(nodes: BulletNode[], depth = 0): string[] {
   const lines: string[] = []
   const pad = '  '.repeat(depth)
   for (const node of nodes) {
-    const text = node.subheading ? `${node.subheading} ${node.content ?? ''}`.trim() : (node.content ?? '')
+    const text = node.subheading
+      ? `${node.subheading} ${node.content ?? ''}`.trim()
+      : (node.content ?? '')
     lines.push(`${pad}- ${text}`)
     if (node.children.length) {
       lines.push(...bulletsToMarkdownLines(node.children, depth + 1))
@@ -57,8 +59,8 @@ function indentedLinesToBulletTree(rows: { indent: number; text: string }[]): Bu
   const lastAtDepth: BulletNode[] = []
 
   for (const row of rows) {
-    let subheading = ''
-    let content = row.text
+    const subheading = ''
+    const content = row.text
     // 列表项中的普通空格不再触发「子标题 + 正文」拆分，避免出现误加粗。
     const node = createBulletNode(subheading, content, [])
     const d = row.indent
@@ -86,7 +88,10 @@ function indentedLinesToBulletTree(rows: { indent: number; text: string }[]): Bu
 }
 
 /** 解析无序列表行：前导空格（每 2 格一级）+ `-` 或 `*` */
-function parseBulletBlock(lines: string[], startIndex: number): { rows: { indent: number; text: string }[]; nextIndex: number } {
+function parseBulletBlock(
+  lines: string[],
+  startIndex: number,
+): { rows: { indent: number; text: string }[]; nextIndex: number } {
   const rows: { indent: number; text: string }[] = []
   let i = startIndex
   while (i < lines.length) {
@@ -169,13 +174,10 @@ function parseEntryBodyInSlice(blockLines: string[]): {
     allTags.push(...extractTags(m))
   }
 
-  let period = ''
-  let subheading = ''
+  let period: string
+  let subheading: string
   const cleanedMeta = meta.map(removeTags)
-  if (cleanedMeta.length === 0) {
-    period = ''
-    subheading = ''
-  } else if (cleanedMeta.length === 1) {
+  if (cleanedMeta.length === 1) {
     const only = cleanedMeta[0] ?? ''
     if (looksLikePeriodLine(only)) {
       period = only
@@ -230,7 +232,7 @@ function parseEntryBodyInSlice(blockLines: string[]): {
     i = bulletParse.nextIndex
   }
 
-  let bullets = indentedLinesToBulletTree(bulletParse.rows)
+  const bullets = indentedLinesToBulletTree(bulletParse.rows)
 
   if (i < blockLines.length) {
     const tailLines = blockLines.slice(i)
@@ -252,7 +254,10 @@ function parseEntryBodyInSlice(blockLines: string[]): {
   return { period, subheading, tags: allTags, bullets }
 }
 
-function preserveStructureIds(parsed: ResumeSection[], previous: ResumeSection[] | undefined): void {
+function preserveStructureIds(
+  parsed: ResumeSection[],
+  previous: ResumeSection[] | undefined,
+): void {
   if (!previous?.length) {
     return
   }

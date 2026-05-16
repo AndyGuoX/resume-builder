@@ -1,0 +1,277 @@
+@theme-color: var(--resume-theme-color, #f59e0b);
+@tag-bg: var(--tag-bg-color, #fef3c7);
+@tag-text: var(--tag-text-color, #b45309);
+
+.preview-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+}
+
+.resume-page {
+  width: 794px;
+  min-height: 0;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 10px 25px rgb(0 0 0 / 12%);
+  padding: 5mm 10mm 20mm;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.resume-header {
+  margin-bottom: 20px;
+  border-top: 8px solid @theme-color;
+  padding-top: 16px;
+
+  &-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  &-main {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+  }
+
+  &-photo {
+    width: 80px;
+    height: 106px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    &-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 106px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+  }
+}
+
+.resume-doc-title {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.personal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+.personal-info-cell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #374151;
+}
+
+.personal-info-label {
+  color: #6b7280;
+  white-space: nowrap;
+
+  &::after {
+    content: '：';
+  }
+}
+
+.personal-info-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+// 模块之间：分隔线画在上一模块底部
+.resume-section {
+  &:not(:last-child) {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  // 模块标题：仅文字下半部分铺色（荧光笔效果）
+  h2 {
+    display: inline;
+    margin: 0 0 4px;
+    padding: 0 2px 2px;
+    border-radius: 0;
+    position: relative;
+    z-index: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #000;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 50% 0 0;
+      background-color: @theme-color;
+      opacity: 0.6;
+      z-index: -1;
+    }
+  }
+}
+
+.resume-entry {
+  margin-top: 8px;
+}
+
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.entry-heading-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.entry-period {
+  color: #6b7280;
+  white-space: nowrap;
+  font-size: 14px;
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.entry-sub {
+  margin: 4px 0;
+  color: #374151;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.entry-tags {
+  margin: 4px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+// 每层列表符号：实心圆 → 空心圆 → 方块 → 数字，再循环
+.resume-bullet-tree {
+  margin: 6px 0 0;
+  padding-left: 18px;
+
+  &--depth-0 {
+    list-style-type: disc;
+  }
+
+  &--depth-1 {
+    list-style-type: circle;
+  }
+
+  &--depth-2 {
+    list-style-type: square;
+  }
+
+  &--depth-3 {
+    list-style-type: decimal;
+  }
+
+  .resume-bullet-tree {
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+}
+
+.resume-bullet-item {
+  margin-top: 3px;
+}
+
+.resume-bullet-text {
+  strong {
+    font-weight: 600;
+  }
+
+  > .bullet-subheading + .bullet-content::before {
+    content: ' ';
+  }
+}
+
+.bullet-subheading {
+  font-weight: 600;
+  color: #111827;
+}
+
+.bullet-content {
+  color: #374151;
+}
+
+.resume-tag {
+  display: inline-block;
+  margin: 0 2px;
+  font-size: 0.9em;
+  font-weight: 500;
+  line-height: 1.4;
+  background: @tag-bg;
+  color: @tag-text;
+  padding: 3px 10px;
+  border-radius: 4px;
+
+  @media print {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+@media print {
+  .preview-scroll {
+    gap: 0 !important;
+    display: block !important;
+  }
+
+  .resume-page {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 5mm 10mm 8mm !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  // 打印时压缩末尾冗余空隙
+  .resume-header {
+    margin-bottom: 16px !important;
+  }
+}

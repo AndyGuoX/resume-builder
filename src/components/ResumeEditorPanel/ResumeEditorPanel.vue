@@ -1,14 +1,15 @@
 <script setup lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import { ref } from 'vue'
-import type { ResumeDocument } from '../types/resume'
-import { compressImageFileToDataUrl } from '../utils/localImage'
+import type { ResumeDocument } from '../../types/resume'
+import { compressImageFileToDataUrl } from '../../utils/localImage'
 import {
   blockLeadingSpaceBeforeInput,
   blockLeadingSpaceKeydown,
   inputTrimLeading,
   inputTrimOnBlur,
   onPasteTrimLeading,
-} from '../utils/inputTrim'
+} from '../../utils/inputTrim'
 
 /** 粘贴：合并后去行首空白 */
 function pasteTrim(set: (v: string) => void) {
@@ -80,7 +81,11 @@ const emit = defineEmits<{
       <label>
         主题色
         <div class="theme-color-row">
-          <input v-model="props.resume.profile.themeColor" type="color" class="theme-color-picker" />
+          <input
+            v-model="props.resume.profile.themeColor"
+            type="color"
+            class="theme-color-picker"
+          />
           <input
             :value="props.resume.profile.themeColor"
             type="text"
@@ -106,7 +111,12 @@ const emit = defineEmits<{
           <button type="button" :disabled="avatarLoading" @click="openFilePicker">
             {{ avatarLoading ? '处理中…' : '从本地选择照片' }}
           </button>
-          <button v-if="props.resume.profile.avatarUrl" type="button" class="danger" @click="clearAvatar">
+          <button
+            v-if="props.resume.profile.avatarUrl"
+            type="button"
+            class="danger"
+            @click="clearAvatar"
+          >
             清除照片
           </button>
         </div>
@@ -146,7 +156,11 @@ const emit = defineEmits<{
             @paste="pasteTrim((v) => (field.value = v))"
           />
         </label>
-        <button type="button" class="danger personal-field-remove" @click="emit('remove-personal-field', fieldIndex)">
+        <button
+          type="button"
+          class="danger personal-field-remove"
+          @click="emit('remove-personal-field', fieldIndex)"
+        >
           删除
         </button>
       </div>
@@ -158,8 +172,16 @@ const emit = defineEmits<{
     <section class="editor-card modules-markdown-card">
       <h3>经历与模块（Markdown）</h3>
       <p class="editor-hint">
-        使用 <code>##</code> 表示<strong>模块标题</strong>（右侧 <code>h2</code> 样式不变），<code>###</code> 表示<strong>主标题</strong>（条目主标题行）。
-        <code>##</code> 与标题之间可以没有空格；行首也可缩进。模块下可以暂时没有 <code>###</code>（仅显示模块标题），<strong>也可直接写副标题</strong>。紧跟 <code>###</code> 的前两行可为时间、副标题：第一行若含年份/日期则视为时间，否则视为副标题；两行则依次为时间、副标题。<strong>题下也可以有副标题</strong>。要点使用 <code>-</code> 列表，子项缩进两个空格。标题、时间、副标题、要点中可用 <code>**文字**</code> 表示加粗。
+        使用 <code>##</code> 表示<strong>模块标题</strong>（右侧 <code>h2</code> 样式不变），<code
+          >###</code
+        >
+        表示<strong>主标题</strong>（条目主标题行）。
+        <code>##</code> 与标题之间可以没有空格；行首也可缩进。模块下可以暂时没有
+        <code>###</code>（仅显示模块标题），<strong>也可直接写副标题</strong>。紧跟
+        <code>###</code>
+        的前两行可为时间、副标题：第一行若含年份/日期则视为时间，否则视为副标题；两行则依次为时间、副标题。<strong>题下也可以有副标题</strong>。要点使用
+        <code>-</code> 列表，子项缩进两个空格。标题、时间、副标题、要点中可用
+        <code>**文字**</code> 表示加粗。
       </p>
       <textarea
         v-model="props.resume.modulesMarkdown"
@@ -178,3 +200,7 @@ const emit = defineEmits<{
     </section>
   </div>
 </template>
+
+<style lang="less">
+@import './style.less';
+</style>

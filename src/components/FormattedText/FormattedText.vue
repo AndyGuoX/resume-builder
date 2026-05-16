@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { parseInlineBold } from '../utils/inlineBold'
+import { parseInlineBold } from '../../utils/inlineBold'
 
 const props = defineProps<{
   text: string

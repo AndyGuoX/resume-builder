@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createDefaultResume } from '../constants/defaultResume'
-import { parseModulesMarkdown, serializeModulesMarkdown } from './modulesMarkdown'
+import { parseModulesMarkdown, serializeModulesMarkdown } from '../utils/modulesMarkdown'
 
 describe('modulesMarkdown', () => {
   it('默认简历序列化后再解析，模块数量与标题一致', () => {

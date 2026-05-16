@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import BulletList from './BulletList.vue'
-import FormattedText from './FormattedText.vue'
-import type { ResumeProfile, ResumeSection } from '../types/resume'
+import BulletList from '../BulletList/BulletList.vue'
+import FormattedText from '../FormattedText/FormattedText.vue'
+import type { ResumeProfile, ResumeSection } from '../../types/resume'
 
 defineProps<{
   profile: ResumeProfile
@@ -15,7 +15,9 @@ defineProps<{
       <header class="resume-header">
         <div class="resume-header-inner">
           <div class="resume-header-main">
-            <h1 class="resume-doc-title"><FormattedText :text="profile.resumeTitle" :theme-color="profile.themeColor" /></h1>
+            <h1 class="resume-doc-title">
+              <FormattedText :text="profile.resumeTitle" :theme-color="profile.themeColor" />
+            </h1>
             <div class="personal-info-grid">
               <div
                 v-for="field in profile.personalFields"
@@ -35,29 +37,53 @@ defineProps<{
       </header>
 
       <section v-for="section in sections" :key="section.id" class="resume-section">
-        <h2 v-if="section.showTitle !== false"><FormattedText :text="section.title" :theme-color="profile.themeColor" /></h2>
+        <h2 v-if="section.showTitle !== false">
+          <FormattedText :text="section.title" :theme-color="profile.themeColor" />
+        </h2>
         <div v-for="entry in section.entries" :key="entry.id" class="resume-entry">
           <div
-            v-if="entry.showMeta !== false && (entry.heading.trim() || entry.period.trim() || entry.tags?.length)"
+            v-if="
+              entry.showMeta !== false &&
+              (entry.heading.trim() || entry.period.trim() || entry.tags?.length)
+            "
             class="entry-head"
           >
-            <span class="entry-heading-text"><FormattedText :text="entry.heading" :theme-color="profile.themeColor" /></span>
-            <span class="entry-period"><FormattedText :text="entry.period" :theme-color="profile.themeColor" /></span>
+            <span class="entry-heading-text"
+              ><FormattedText :text="entry.heading" :theme-color="profile.themeColor"
+            /></span>
+            <span class="entry-period"
+              ><FormattedText :text="entry.period" :theme-color="profile.themeColor"
+            /></span>
           </div>
           <div v-if="entry.showMeta !== false && entry.tags?.length" class="entry-tags">
             <span
               v-for="tag in entry.tags"
               :key="tag"
               class="resume-tag"
-              :style="{ '--tag-bg-color': profile.themeColor + '20', '--tag-text-color': profile.themeColor }"
-            >{{ tag }}</span>
+              :style="{
+                '--tag-bg-color': profile.themeColor + '20',
+                '--tag-text-color': profile.themeColor,
+              }"
+              >{{ tag }}</span
+            >
           </div>
           <p v-if="entry.showMeta !== false && entry.subheading" class="entry-sub">
             <FormattedText :text="entry.subheading" :theme-color="profile.themeColor" />
           </p>
-          <BulletList v-if="entry.bullets.length && entry.bullets.some(b => b.content || b.subheading || b.children.length)" :nodes="entry.bullets" :theme-color="profile.themeColor" />
+          <BulletList
+            v-if="
+              entry.bullets.length &&
+              entry.bullets.some((b) => b.content || b.subheading || b.children.length)
+            "
+            :nodes="entry.bullets"
+            :theme-color="profile.themeColor"
+          />
         </div>
       </section>
     </article>
   </div>
 </template>
+
+<style lang="less">
+@import './style.less';
+</style>

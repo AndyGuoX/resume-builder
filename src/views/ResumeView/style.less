@@ -1,0 +1,33 @@
+.left-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: var(--left-panel-width);
+  height: 100vh;
+  box-shadow: 2px 0 12px rgb(0 0 0 / 6%);
+}
+
+@media (width <= 1360px) {
+  .left-panel {
+    position: relative;
+    left: auto;
+    top: auto;
+    z-index: auto;
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    box-shadow: none;
+  }
+}
+
+@media print {
+  .left-panel {
+    display: none !important;
+  }
+
+  .preview-root-inner {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: auto !important;
+  }
+}
