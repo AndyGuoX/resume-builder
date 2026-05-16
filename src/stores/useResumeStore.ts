@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import {
   createDefaultResume,
@@ -27,10 +28,12 @@ function normalizeResumeDocument(raw: unknown): ResumeDocument | null {
 
   // 新结构：含 personalFields 数组（可为空）
   if (Array.isArray(p.personalFields)) {
-    const sectionsRaw = Array.isArray(doc.sections) ? (doc.sections as ResumeDocument['sections']) : []
+    const sectionsRaw = Array.isArray(doc.sections)
+      ? (doc.sections as ResumeDocument['sections'])
+      : []
     const mdRaw = typeof doc.modulesMarkdown === 'string' ? doc.modulesMarkdown.trim() : ''
     const modulesMarkdown =
-      mdRaw.length > 0 ? doc.modulesMarkdown as string : serializeModulesMarkdown(sectionsRaw)
+      mdRaw.length > 0 ? (doc.modulesMarkdown as string) : serializeModulesMarkdown(sectionsRaw)
     return {
       modulesMarkdown,
       sections: sectionsRaw,
@@ -58,7 +61,9 @@ function normalizeResumeDocument(raw: unknown): ResumeDocument | null {
     fields[phoneIdx] = { ...fields[phoneIdx], value: legacyPhone }
   }
 
-  const sectionsRaw = Array.isArray(doc.sections) ? (doc.sections as ResumeDocument['sections']) : []
+  const sectionsRaw = Array.isArray(doc.sections)
+    ? (doc.sections as ResumeDocument['sections'])
+    : []
   const mdRawLegacy = typeof doc.modulesMarkdown === 'string' ? doc.modulesMarkdown.trim() : ''
   const modulesMarkdown =
     mdRawLegacy.length > 0 ? (doc.modulesMarkdown as string) : serializeModulesMarkdown(sectionsRaw)
@@ -90,7 +95,7 @@ function safeParseResume(raw: string | null): ResumeDocument | null {
   return null
 }
 
-export function useResumeStore() {
+export const useResumeStore = defineStore('resume', () => {
   const resume = ref<ResumeDocument>(createDefaultResume())
 
   const persisted = safeParseResume(localStorage.getItem(STORAGE_KEY))
@@ -106,7 +111,9 @@ export function useResumeStore() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
       } catch (error) {
         console.error('写入 localStorage 失败', error)
-        window.alert('保存到本地失败（可能超出浏览器存储上限），请尝试更换较小的照片或清理浏览器数据。')
+        window.alert(
+          '保存到本地失败（可能超出浏览器存储上限），请尝试更换较小的照片或清理浏览器数据。',
+        )
       }
     },
     { deep: true },
@@ -141,4 +148,4 @@ export function useResumeStore() {
     removePersonalField,
     resetToDefault,
   }
-}
+})

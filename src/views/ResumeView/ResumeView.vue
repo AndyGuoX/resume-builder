@@ -3,7 +3,8 @@ import { onMounted, onUnmounted, ref } from 'vue'
 import ExportToolbar from '../../components/ExportToolbar/ExportToolbar.vue'
 import ResumeEditorPanel from '../../components/ResumeEditorPanel/ResumeEditorPanel.vue'
 import ResumePreview from '../../components/ResumePreview/ResumePreview.vue'
-import { useResumeStore } from '../../composables/useResumeStore'
+import { storeToRefs } from 'pinia'
+import { useResumeStore } from '../../stores/useResumeStore'
 import { exportPng, exportWord, sanitizeResumeFileName } from '../../utils/exporters'
 
 const previewRootRef = ref<HTMLElement | null>(null)
@@ -15,7 +16,9 @@ function exitPreviewOnly() {
   previewOnly.value = false
 }
 
-const { resume, addPersonalField, removePersonalField, resetToDefault } = useResumeStore()
+const store = useResumeStore()
+const { resume } = storeToRefs(store)
+const { addPersonalField, removePersonalField, resetToDefault } = store
 
 async function runExport(task: () => Promise<void>) {
   if (!previewRootRef.value) {
