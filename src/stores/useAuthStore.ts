@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { login as apiLogin } from '../api/auth';
+import { login as apiLogin, logout as apiLogout } from '../api/auth';
 import type { LoginParams, User } from '../types/auth';
 
 const TOKEN_KEY = 'resume-builder-auth-token';
@@ -25,6 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    // Fire-and-forget: notify backend to invalidate token
+    // Errors are intentionally ignored to ensure local logout always succeeds
+    apiLogout().catch(() => {});
   }
 
   return { token, user, isLoggedIn, login, logout };
