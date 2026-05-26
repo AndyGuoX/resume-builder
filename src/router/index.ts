@@ -26,7 +26,8 @@ const router = createRouter({
 router.beforeEach((to) => {
   const authStore = useAuthStore();
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
-    return { path: '/login', query: { redirect: to.fullPath } };
+    const redirect = to.fullPath.startsWith('/') ? to.fullPath : '/resume';
+    return { path: '/login', query: { redirect } };
   }
   if (to.path === '/login' && authStore.isLoggedIn) {
     return { path: '/resume' };
