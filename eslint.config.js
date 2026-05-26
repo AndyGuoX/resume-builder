@@ -1,13 +1,12 @@
-import globals from 'globals'
-import pluginJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import pluginVue from 'eslint-plugin-vue'
-import eslintConfigPrettier from 'eslint-config-prettier'
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import ignores from './eslint.ignores.js';
 
 export default [
-  {
-    ignores: ['dist/**', 'node_modules/**'],
-  },
+  ...ignores,
   {
     files: ['**/*.{js,mjs,cjs,ts,vue}'],
     languageOptions: {
@@ -32,4 +31,4 @@ export default [
       'vue/multi-word-component-names': 'off',
     },
   },
-]
+];
