@@ -25,6 +25,7 @@ const rules = {
 };
 
 async function handleSubmit() {
+  if (loading.value) return;
   errorMsg.value = '';
   loading.value = true;
   try {
