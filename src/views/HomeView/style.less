@@ -1,0 +1,176 @@
+// src/views/HomeView/style.less
+.home-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 6%);
+}
+
+.home-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #1a1a1a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.home-brand-icon {
+  font-size: 22px;
+}
+
+.home-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.home-nav-username {
+  color: #666;
+  font-size: 14px;
+}
+
+// 公共 section 布局
+.home-section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.home-section-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 48px;
+}
+
+// Hero
+.home-hero {
+  background: linear-gradient(160deg, #f5f6ff 0%, #eef0ff 100%);
+  text-align: center;
+}
+
+.home-hero-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+
+  @media (width <= 768px) {
+    font-size: 32px;
+  }
+}
+
+.home-hero-subtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.home-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+// How To
+.home-how-to {
+  background: #fff;
+}
+
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  text-align: center;
+
+  @media (width <= 768px) {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.home-step-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.home-step-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.home-step-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+
+// Features
+.home-features {
+  background: #f5f6ff;
+}
+
+.home-feature-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+
+  @media (width <= 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+}
+
+.home-feature-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.home-feature-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.home-feature-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+
+// Footer
+.home-footer {
+  background: #1a1a1a;
+  color: #999;
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 14px;
+}
