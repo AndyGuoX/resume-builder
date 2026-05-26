@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import UnoCSS from 'unocss/vite'
-import Components from 'unplugin-vue-components/vite'
-import AutoImport from 'unplugin-auto-import/vite'
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
-import { AntDesignXVueResolver } from 'ant-design-x-vue/resolver'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import UnoCSS from 'unocss/vite';
+import Components from 'unplugin-vue-components/vite';
+import AutoImport from 'unplugin-auto-import/vite';
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
+import { AntDesignXVueResolver } from 'ant-design-x-vue/resolver';
 
 // https://vite.dev/config/
 // build 使用相对路径，便于 GitHub Pages（子路径 / 直接打开 dist/index.html）加载 JS/CSS
@@ -29,4 +29,7 @@ export default defineConfig(({ command }) => ({
   preview: {
     host: true,
   },
-}))
+  test: {
+    environment: 'jsdom',
+  },
+}));
