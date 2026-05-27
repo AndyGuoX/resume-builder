@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import BulletList from '../BulletList/BulletList.vue'
-import FormattedText from '../FormattedText/FormattedText.vue'
-import type { ResumeProfile, ResumeSection } from '../../types/resume'
+import BulletList from '../BulletList/BulletList.vue';
+import FormattedText from '../FormattedText/FormattedText.vue';
+import type { ResumeProfile, ResumeSection } from '../../types/resume';
 
 defineProps<{
-  profile: ResumeProfile
-  sections: ResumeSection[]
-}>()
+  profile: ResumeProfile;
+  sections: ResumeSection[];
+}>();
 </script>
 
 <template>

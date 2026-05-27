@@ -1,90 +1,90 @@
-import type { BulletNode, ResumeEntry, ResumeSection, ResumeSectionType } from '../types/resume'
-import { createBulletNode, generateResumeId } from './bulletNodes'
+import type { BulletNode, ResumeEntry, ResumeSection, ResumeSectionType } from '../types/resume';
+import { createBulletNode, generateResumeId } from './bulletNodes';
 
 /** 二级标题 ##：允许行首空白、## 与标题之间可无空格；不与 ### 混淆 */
 function matchH2Line(line: string): RegExpMatchArray | null {
-  return line.match(/^\s*##\s*(?!#)(.*)$/)
+  return line.match(/^\s*##\s*(?!#)(.*)$/);
 }
 
 /** 三级标题 ### */
 function matchH3Line(line: string): RegExpMatchArray | null {
-  return line.match(/^\s*###\s*(?!#)(.*)$/)
+  return line.match(/^\s*###\s*(?!#)(.*)$/);
 }
 
 /** 是否为模块/条目标题行（元信息区、列表块遇到此行则结束） */
 function isSectionHeadingLine(line: string): boolean {
-  return matchH2Line(line) !== null || matchH3Line(line) !== null
+  return matchH2Line(line) !== null || matchH3Line(line) !== null;
 }
 
 /** 判断一行是否像「时间」行（含年份或日期片段），用于区分时间行与副标题 */
 function looksLikePeriodLine(line: string): boolean {
-  const t = line.trim()
+  const t = line.trim();
   if (!t) {
-    return false
+    return false;
   }
-  return /\d{4}/.test(t) || /\d{1,2}[./-]\d{1,2}/.test(t)
+  return /\d{4}/.test(t) || /\d{1,2}[./-]\d{1,2}/.test(t);
 }
 
 function extractTags(line: string): string[] {
-  const matches = line.match(/\{[^}]+\}/g)
-  return matches ? matches.map((t) => t.slice(1, -1)) : []
+  const matches = line.match(/\{[^}]+\}/g);
+  return matches ? matches.map((t) => t.slice(1, -1)) : [];
 }
 
 function removeTags(line: string): string {
-  return line.replace(/\{[^}]+\}/g, '').trim()
+  return line.replace(/\{[^}]+\}/g, '').trim();
 }
 
 /** 将要点树转为 Markdown 列表行（2 空格一级缩进） */
 function bulletsToMarkdownLines(nodes: BulletNode[], depth = 0): string[] {
-  const lines: string[] = []
-  const pad = '  '.repeat(depth)
+  const lines: string[] = [];
+  const pad = '  '.repeat(depth);
   for (const node of nodes) {
     const text = node.subheading
       ? `${node.subheading} ${node.content ?? ''}`.trim()
-      : (node.content ?? '')
-    lines.push(`${pad}- ${text}`)
+      : (node.content ?? '');
+    lines.push(`${pad}- ${text}`);
     if (node.children.length) {
-      lines.push(...bulletsToMarkdownLines(node.children, depth + 1))
+      lines.push(...bulletsToMarkdownLines(node.children, depth + 1));
     }
   }
-  return lines
+  return lines;
 }
 
 /** 将扁平的缩进列表行构造成 BulletNode 树（每 2 个前导空格为一级子项） */
 function indentedLinesToBulletTree(rows: { indent: number; text: string }[]): BulletNode[] {
   if (!rows.length) {
-    return [createBulletNode('')]
+    return [createBulletNode('')];
   }
-  const roots: BulletNode[] = []
-  const lastAtDepth: BulletNode[] = []
+  const roots: BulletNode[] = [];
+  const lastAtDepth: BulletNode[] = [];
 
   for (const row of rows) {
-    const subheading = ''
-    const content = row.text
+    const subheading = '';
+    const content = row.text;
     // 列表项中的普通空格不再触发「子标题 + 正文」拆分，避免出现误加粗。
-    const node = createBulletNode(subheading, content, [])
-    const d = row.indent
+    const node = createBulletNode(subheading, content, []);
+    const d = row.indent;
 
     if (d === 0) {
-      roots.push(node)
-      lastAtDepth[0] = node
-      lastAtDepth.length = 1
-      continue
+      roots.push(node);
+      lastAtDepth[0] = node;
+      lastAtDepth.length = 1;
+      continue;
     }
 
-    const parent = lastAtDepth[d - 1]
+    const parent = lastAtDepth[d - 1];
     if (parent) {
-      parent.children.push(node)
-      lastAtDepth[d] = node
-      lastAtDepth.length = d + 1
+      parent.children.push(node);
+      lastAtDepth[d] = node;
+      lastAtDepth.length = d + 1;
     } else {
-      roots.push(node)
-      lastAtDepth[0] = node
-      lastAtDepth.length = 1
+      roots.push(node);
+      lastAtDepth[0] = node;
+      lastAtDepth.length = 1;
     }
   }
 
-  return roots.length ? roots : [createBulletNode('')]
+  return roots.length ? roots : [createBulletNode('')];
 }
 
 /** 解析无序列表行：前导空格（每 2 格一级）+ `-` 或 `*` */
@@ -92,36 +92,36 @@ function parseBulletBlock(
   lines: string[],
   startIndex: number,
 ): { rows: { indent: number; text: string }[]; nextIndex: number } {
-  const rows: { indent: number; text: string }[] = []
-  let i = startIndex
+  const rows: { indent: number; text: string }[] = [];
+  let i = startIndex;
   while (i < lines.length) {
-    const raw = lines[i]
+    const raw = lines[i];
     if (isSectionHeadingLine(raw)) {
-      break
+      break;
     }
-    const bulletMatch = raw.match(/^(\s*)[-*]\s+(.*)$/)
+    const bulletMatch = raw.match(/^(\s*)[-*]\s+(.*)$/);
     if (bulletMatch) {
-      const lead = bulletMatch[1] ?? ''
-      const indent = Math.min(Math.floor(lead.length / 2), 32)
-      rows.push({ indent, text: bulletMatch[2] ?? '' })
-      i += 1
-      continue
+      const lead = bulletMatch[1] ?? '';
+      const indent = Math.min(Math.floor(lead.length / 2), 32);
+      rows.push({ indent, text: bulletMatch[2] ?? '' });
+      i += 1;
+      continue;
     }
     if (raw.trim() === '') {
-      i += 1
-      continue
+      i += 1;
+      continue;
     }
-    break
+    break;
   }
-  return { rows, nextIndex: i }
+  return { rows, nextIndex: i };
 }
 
 /** 按树形位置合并 id，减少编辑 Markdown 时列表重渲染 */
 function mergeBulletNodeIds(prev: BulletNode[], next: BulletNode[]): void {
-  const n = Math.min(prev.length, next.length)
+  const n = Math.min(prev.length, next.length);
   for (let i = 0; i < n; i += 1) {
-    next[i].id = prev[i].id
-    mergeBulletNodeIds(prev[i].children, next[i].children)
+    next[i].id = prev[i].id;
+    mergeBulletNodeIds(prev[i].children, next[i].children);
   }
 }
 
@@ -129,97 +129,97 @@ function mergeBulletNodeIds(prev: BulletNode[], next: BulletNode[]): void {
 function findNextHeadingLineIndex(lines: string[], start: number): number {
   for (let j = start; j < lines.length; j += 1) {
     if (matchH2Line(lines[j]) || matchH3Line(lines[j])) {
-      return j
+      return j;
     }
   }
-  return lines.length
+  return lines.length;
 }
 
 function parseEntryBodyInSlice(blockLines: string[]): {
-  period: string
-  subheading: string
-  tags: string[]
-  bullets: BulletNode[]
+  period: string;
+  subheading: string;
+  tags: string[];
+  bullets: BulletNode[];
 } {
-  let i = 0
+  let i = 0;
   while (i < blockLines.length && blockLines[i].trim() === '') {
-    i += 1
+    i += 1;
   }
   if (i >= blockLines.length) {
-    return { period: '', subheading: '', tags: [], bullets: [createBulletNode('')] }
+    return { period: '', subheading: '', tags: [], bullets: [createBulletNode('')] };
   }
 
-  const meta: string[] = []
+  const meta: string[] = [];
   while (i < blockLines.length) {
-    const peek = blockLines[i]
+    const peek = blockLines[i];
     if (isSectionHeadingLine(peek)) {
-      break
+      break;
     }
     if (/^\s*[-*]\s+/.test(peek)) {
-      break
+      break;
     }
     if (peek.trim() === '') {
-      i += 1
-      continue
+      i += 1;
+      continue;
     }
-    meta.push(peek.trim())
-    i += 1
+    meta.push(peek.trim());
+    i += 1;
     if (meta.length >= 3) {
-      break
+      break;
     }
   }
 
-  const allTags: string[] = []
+  const allTags: string[] = [];
   for (const m of meta) {
-    allTags.push(...extractTags(m))
+    allTags.push(...extractTags(m));
   }
 
-  let period: string
-  let subheading: string
-  const cleanedMeta = meta.map(removeTags)
+  let period: string;
+  let subheading: string;
+  const cleanedMeta = meta.map(removeTags);
   if (cleanedMeta.length === 1) {
-    const only = cleanedMeta[0] ?? ''
+    const only = cleanedMeta[0] ?? '';
     if (looksLikePeriodLine(only)) {
-      period = only
-      subheading = ''
+      period = only;
+      subheading = '';
     } else {
-      period = ''
-      subheading = only
+      period = '';
+      subheading = only;
     }
   } else if (cleanedMeta.length === 2) {
-    const a = cleanedMeta[0] ?? ''
-    const b = cleanedMeta[1] ?? ''
+    const a = cleanedMeta[0] ?? '';
+    const b = cleanedMeta[1] ?? '';
     if (looksLikePeriodLine(a) && !looksLikePeriodLine(b)) {
-      period = a
-      subheading = b
+      period = a;
+      subheading = b;
     } else if (!looksLikePeriodLine(a) && looksLikePeriodLine(b)) {
-      period = b
-      subheading = a
+      period = b;
+      subheading = a;
     } else {
-      period = a
-      subheading = b
+      period = a;
+      subheading = b;
     }
   } else {
-    const a = cleanedMeta[0] ?? ''
-    const b = cleanedMeta[1] ?? ''
-    const c = cleanedMeta[2] ?? ''
+    const a = cleanedMeta[0] ?? '';
+    const b = cleanedMeta[1] ?? '';
+    const c = cleanedMeta[2] ?? '';
     if (looksLikePeriodLine(a) && !looksLikePeriodLine(b)) {
-      period = a
-      subheading = [b, c].filter(Boolean).join('\n')
+      period = a;
+      subheading = [b, c].filter(Boolean).join('\n');
     } else if (!looksLikePeriodLine(a) && looksLikePeriodLine(b)) {
-      period = b
-      subheading = [a, c].filter(Boolean).join('\n')
+      period = b;
+      subheading = [a, c].filter(Boolean).join('\n');
     } else if (looksLikePeriodLine(a) && looksLikePeriodLine(b)) {
-      period = a
-      subheading = [b, c].filter(Boolean).join('\n')
+      period = a;
+      subheading = [b, c].filter(Boolean).join('\n');
     } else {
-      period = a
-      subheading = [b, c].filter(Boolean).join('\n')
+      period = a;
+      subheading = [b, c].filter(Boolean).join('\n');
     }
   }
 
-  let bulletParse = parseBulletBlock(blockLines, i)
-  i = bulletParse.nextIndex
+  let bulletParse = parseBulletBlock(blockLines, i);
+  i = bulletParse.nextIndex;
   if (
     bulletParse.rows.length === 0 &&
     i < blockLines.length &&
@@ -227,31 +227,31 @@ function parseEntryBodyInSlice(blockLines: string[]): {
     !/^\s*[-*]\s+/.test(blockLines[i] ?? '') &&
     (blockLines[i] ?? '').trim() !== ''
   ) {
-    i += 1
-    bulletParse = parseBulletBlock(blockLines, i)
-    i = bulletParse.nextIndex
+    i += 1;
+    bulletParse = parseBulletBlock(blockLines, i);
+    i = bulletParse.nextIndex;
   }
 
-  const bullets = indentedLinesToBulletTree(bulletParse.rows)
+  const bullets = indentedLinesToBulletTree(bulletParse.rows);
 
   if (i < blockLines.length) {
-    const tailLines = blockLines.slice(i)
-    const tail = tailLines.join('\n').trim()
+    const tailLines = blockLines.slice(i);
+    const tail = tailLines.join('\n').trim();
     if (tail) {
       if (bulletParse.rows.length === 0) {
-        subheading = subheading ? `${subheading}\n${tail}` : tail
+        subheading = subheading ? `${subheading}\n${tail}` : tail;
       } else {
         for (const tl of tailLines) {
-          const t = tl.trim()
+          const t = tl.trim();
           if (t) {
-            bullets.push(createBulletNode(t))
+            bullets.push(createBulletNode(t));
           }
         }
       }
     }
   }
 
-  return { period, subheading, tags: allTags, bullets }
+  return { period, subheading, tags: allTags, bullets };
 }
 
 function preserveStructureIds(
@@ -259,74 +259,74 @@ function preserveStructureIds(
   previous: ResumeSection[] | undefined,
 ): void {
   if (!previous?.length) {
-    return
+    return;
   }
   for (let si = 0; si < parsed.length; si += 1) {
-    const pSec = previous[si]
-    const nSec = parsed[si]
+    const pSec = previous[si];
+    const nSec = parsed[si];
     if (!pSec || !nSec) {
-      continue
+      continue;
     }
-    nSec.id = pSec.id
-    nSec.type = pSec.type
+    nSec.id = pSec.id;
+    nSec.type = pSec.type;
     for (let ei = 0; ei < nSec.entries.length; ei += 1) {
-      const pEn = pSec.entries[ei]
-      const nEn = nSec.entries[ei]
+      const pEn = pSec.entries[ei];
+      const nEn = nSec.entries[ei];
       if (!pEn || !nEn) {
-        continue
+        continue;
       }
-      nEn.id = pEn.id
-      mergeBulletNodeIds(pEn.bullets, nEn.bullets)
+      nEn.id = pEn.id;
+      mergeBulletNodeIds(pEn.bullets, nEn.bullets);
     }
   }
 }
 
 /** 从 Markdown 解析模块区，生成与原先表单一致的 sections 结构（预览样式不变） */
 export function parseModulesMarkdown(source: string, previous?: ResumeSection[]): ResumeSection[] {
-  const text = source.replace(/\r\n/g, '\n')
-  const lines = text.split('\n')
-  const sections: ResumeSection[] = []
-  let currentSection: ResumeSection | null = null
+  const text = source.replace(/\r\n/g, '\n');
+  const lines = text.split('\n');
+  const sections: ResumeSection[] = [];
+  let currentSection: ResumeSection | null = null;
 
   const ensureSection = (): ResumeSection => {
     if (currentSection) {
-      return currentSection
+      return currentSection;
     }
     const fallback: ResumeSection = {
       id: generateResumeId('section'),
       type: 'custom' as ResumeSectionType,
       title: '未命名模块',
       entries: [],
-    }
-    sections.push(fallback)
-    currentSection = fallback
-    return fallback
-  }
+    };
+    sections.push(fallback);
+    currentSection = fallback;
+    return fallback;
+  };
 
-  let i = 0
+  let i = 0;
   while (i < lines.length) {
-    const line = lines[i]
-    const h2 = matchH2Line(line)
+    const line = lines[i];
+    const h2 = matchH2Line(line);
     if (h2) {
       currentSection = {
         id: generateResumeId('section'),
         type: 'custom',
         title: (h2[1] ?? '').trim() || '未命名模块',
         entries: [],
-      }
-      sections.push(currentSection)
-      i += 1
-      continue
+      };
+      sections.push(currentSection);
+      i += 1;
+      continue;
     }
 
-    const h3 = matchH3Line(line)
+    const h3 = matchH3Line(line);
     if (h3) {
-      const section = ensureSection()
-      const heading = (h3[1] ?? '').trim()
-      i += 1
-      const bodyEnd = findNextHeadingLineIndex(lines, i)
-      const bodySlice = lines.slice(i, bodyEnd)
-      const { period, subheading, tags, bullets } = parseEntryBodyInSlice(bodySlice)
+      const section = ensureSection();
+      const heading = (h3[1] ?? '').trim();
+      i += 1;
+      const bodyEnd = findNextHeadingLineIndex(lines, i);
+      const bodySlice = lines.slice(i, bodyEnd);
+      const { period, subheading, tags, bullets } = parseEntryBodyInSlice(bodySlice);
       section.entries.push({
         id: generateResumeId('entry'),
         heading,
@@ -334,18 +334,18 @@ export function parseModulesMarkdown(source: string, previous?: ResumeSection[])
         period,
         tags,
         bullets,
-      })
-      i = bodyEnd
-      continue
+      });
+      i = bodyEnd;
+      continue;
     }
 
     // 有 ## 模块但删掉了 ###：从当前行到下一标题之间的内容解析为一条「无主标题」条目
     if (line.trim() !== '' && currentSection) {
-      const bodyEnd = findNextHeadingLineIndex(lines, i)
-      const bodySlice = lines.slice(i, bodyEnd)
-      const onlyWs = bodySlice.every((l) => l.trim() === '')
+      const bodyEnd = findNextHeadingLineIndex(lines, i);
+      const bodySlice = lines.slice(i, bodyEnd);
+      const onlyWs = bodySlice.every((l) => l.trim() === '');
       if (!onlyWs) {
-        const { period, subheading, tags, bullets } = parseEntryBodyInSlice(bodySlice)
+        const { period, subheading, tags, bullets } = parseEntryBodyInSlice(bodySlice);
         currentSection.entries.push({
           id: generateResumeId('entry'),
           heading: '',
@@ -353,63 +353,63 @@ export function parseModulesMarkdown(source: string, previous?: ResumeSection[])
           period,
           tags,
           bullets,
-        })
-        i = bodyEnd
-        continue
+        });
+        i = bodyEnd;
+        continue;
       }
     }
 
     if (line.trim() === '') {
-      i += 1
-      continue
+      i += 1;
+      continue;
     }
 
-    i += 1
+    i += 1;
   }
 
-  preserveStructureIds(sections, previous)
-  return sections
+  preserveStructureIds(sections, previous);
+  return sections;
 }
 
 function serializeEntryMarkdown(entry: ResumeEntry): string {
-  const lines: string[] = []
-  const h = entry.heading.trim()
+  const lines: string[] = [];
+  const h = entry.heading.trim();
   if (h) {
-    lines.push(`### ${entry.heading}`)
+    lines.push(`### ${entry.heading}`);
   }
-  const tags = entry.tags ?? []
+  const tags = entry.tags ?? [];
   if (tags.length > 0) {
-    const tagLine = tags.map((t) => `{${t}}`).join(' ')
-    lines.push(tagLine)
+    const tagLine = tags.map((t) => `{${t}}`).join(' ');
+    lines.push(tagLine);
   }
-  const p = entry.period.trim()
-  const s = entry.subheading.trim()
+  const p = entry.period.trim();
+  const s = entry.subheading.trim();
   if (p) {
-    lines.push(p)
+    lines.push(p);
   }
   if (s) {
-    lines.push(s)
+    lines.push(s);
   }
-  const bulletLines = bulletsToMarkdownLines(entry.bullets)
-  lines.push('')
+  const bulletLines = bulletsToMarkdownLines(entry.bullets);
+  lines.push('');
   if (bulletLines.length) {
-    lines.push(...bulletLines)
+    lines.push(...bulletLines);
   } else {
-    lines.push('- ')
+    lines.push('- ');
   }
-  return lines.join('\n')
+  return lines.join('\n');
 }
 
 /** 将 sections 序列化为模块区 Markdown（## 模块、### 主标题） */
 export function serializeModulesMarkdown(sections: ResumeSection[]): string {
-  const chunks: string[] = []
+  const chunks: string[] = [];
   for (const section of sections) {
-    const block: string[] = [`## ${section.title}`]
+    const block: string[] = [`## ${section.title}`];
     for (const entry of section.entries) {
-      block.push('')
-      block.push(serializeEntryMarkdown(entry))
+      block.push('');
+      block.push(serializeEntryMarkdown(entry));
     }
-    chunks.push(block.join('\n'))
+    chunks.push(block.join('\n'));
   }
-  return chunks.join('\n\n')
+  return chunks.join('\n\n');
 }

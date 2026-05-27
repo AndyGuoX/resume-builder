@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { theme } from 'ant-design-vue'
+import { theme } from 'ant-design-vue';
 
 // 全局主题配置：使用自定义品牌色 #515FF1
 const themeConfig = {
@@ -8,7 +8,7 @@ const themeConfig = {
     colorPrimary: '#515FF1',
     colorLink: '#515FF1',
   },
-}
+};
 </script>
 
 <template>
