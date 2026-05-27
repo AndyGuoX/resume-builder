@@ -25,9 +25,13 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null;
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
-    // Fire-and-forget: notify backend to invalidate token
-    // Errors are intentionally ignored to ensure local logout always succeeds
+    // Fire-and-forget: notify backend to invalidate token.
+    // Errors are intentionally ignored to ensure local logout always succeeds.
     apiLogout().catch(() => {});
+    // NOTE: Navigation to /login is the caller's responsibility.
+    // The store avoids importing the router directly to prevent circular imports
+    // (router → useAuthStore → router). Callers such as NavBar and future HTTP
+    // 401 interceptors must call router.push('/login') after logout().
   }
 
   return { token, user, isLoggedIn, login, logout };

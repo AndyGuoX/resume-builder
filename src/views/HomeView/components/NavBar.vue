@@ -15,10 +15,10 @@ function handleLogout() {
 <template>
   <nav class="home-navbar">
     <div class="home-navbar-inner">
-      <a href="/#/" class="home-nav-brand">
+      <router-link to="/" class="home-nav-brand">
         <span class="home-brand-icon">📄</span>
         <span class="home-brand-name">简历制作</span>
-      </a>
+      </router-link>
       <div class="home-nav-actions">
         <template v-if="authStore.isLoggedIn">
           <span class="home-nav-username">{{ authStore.user?.name }}</span>

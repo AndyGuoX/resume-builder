@@ -1,5 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import ResumeView from '../views/ResumeView/ResumeView.vue';
+
+// Extend RouteMeta for type-safe meta fields
+declare module 'vue-router' {
+  interface RouteMeta {
+    requiresAuth?: boolean;
+  }
+}
 import HomeView from '../views/HomeView/HomeView.vue';
 import LoginView from '../views/LoginView/LoginView.vue';
 import { useAuthStore } from '../stores/useAuthStore';
