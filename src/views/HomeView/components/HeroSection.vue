@@ -18,7 +18,7 @@ function handleExample() {
 <template>
   <section class="home-hero">
     <div class="home-section-inner">
-      <h1 class="home-hero-title">在线制作专业简历</h1>
+      <h1 class="home-hero-title">在线制作专业简历1</h1>
       <p class="home-hero-subtitle">填写信息，智能排版，一键导出，快速投递</p>
       <div class="home-hero-actions">
         <a-button type="primary" size="large" @click="handleStart">开始制作 →</a-button>
