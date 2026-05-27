@@ -1,14 +1,14 @@
-import type { ResumeDocument, ResumeSection } from '../types/resume'
-import type { PersonalInfoField } from '../types/resume'
-import { createBulletNode, generateResumeId } from '../utils/bulletNodes'
-import { serializeModulesMarkdown } from '../utils/modulesMarkdown'
+import type { ResumeDocument, ResumeSection } from '../types/resume';
+import type { PersonalInfoField } from '../types/resume';
+import { createBulletNode, generateResumeId } from '../utils/bulletNodes';
+import { serializeModulesMarkdown } from '../utils/modulesMarkdown';
 
 export function createPersonalField(label = '自定义', value = ''): PersonalInfoField {
   return {
     id: generateResumeId('pf'),
     label,
     value,
-  }
+  };
 }
 
 /** 默认个人信息条目 */
@@ -21,7 +21,7 @@ export function createDefaultPersonalFields(): PersonalInfoField[] {
     createPersonalField('电话', '13800138000'),
     createPersonalField('邮箱', 'zhangsan@example.com'),
     createPersonalField('目前状态', '在职 · 看机会'),
-  ]
+  ];
 }
 
 export function createDefaultResume(): ResumeDocument {
@@ -125,7 +125,7 @@ export function createDefaultResume(): ResumeDocument {
         },
       ],
     },
-  ]
+  ];
   return {
     profile: {
       resumeTitle: '前端工程体系升级：主导构建工具从 Webpack 迁移至 RsPack',
@@ -135,5 +135,5 @@ export function createDefaultResume(): ResumeDocument {
     },
     modulesMarkdown: serializeModulesMarkdown(sections),
     sections,
-  }
+  };
 }

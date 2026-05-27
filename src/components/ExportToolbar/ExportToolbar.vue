@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const props = defineProps<{
-  loading: boolean
-}>()
+  loading: boolean;
+}>();
 
 const emit = defineEmits<{
-  (event: 'print-for-pdf'): void
-  (event: 'export-word'): void
-  (event: 'export-png'): void
-  (event: 'enter-preview'): void
-}>()
+  (event: 'print-for-pdf'): void;
+  (event: 'export-word'): void;
+  (event: 'export-png'): void;
+  (event: 'enter-preview'): void;
+}>();
 </script>
 
 <template>

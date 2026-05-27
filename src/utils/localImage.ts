@@ -8,37 +8,37 @@ export async function compressImageFileToDataUrl(
   quality = 0.85,
 ): Promise<string> {
   if (!file.type.startsWith('image/')) {
-    throw new Error('请选择图片文件')
+    throw new Error('请选择图片文件');
   }
 
   return new Promise((resolve, reject) => {
-    const img = new Image()
-    const objectUrl = URL.createObjectURL(file)
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
     img.onload = () => {
-      URL.revokeObjectURL(objectUrl)
-      let { width, height } = img
-      const scale = Math.min(maxWidth / width, maxHeight / height, 1)
-      width = Math.round(width * scale)
-      height = Math.round(height * scale)
-      const canvas = document.createElement('canvas')
-      canvas.width = width
-      canvas.height = height
-      const ctx = canvas.getContext('2d')
+      URL.revokeObjectURL(objectUrl);
+      let { width, height } = img;
+      const scale = Math.min(maxWidth / width, maxHeight / height, 1);
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
       if (!ctx) {
-        reject(new Error('无法创建画布'))
-        return
+        reject(new Error('无法创建画布'));
+        return;
       }
-      ctx.drawImage(img, 0, 0, width, height)
+      ctx.drawImage(img, 0, 0, width, height);
       try {
-        resolve(canvas.toDataURL('image/jpeg', quality))
+        resolve(canvas.toDataURL('image/jpeg', quality));
       } catch (e) {
-        reject(e)
+        reject(e);
       }
-    }
+    };
     img.onerror = () => {
-      URL.revokeObjectURL(objectUrl)
-      reject(new Error('图片加载失败'))
-    }
-    img.src = objectUrl
-  })
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('图片加载失败'));
+    };
+    img.src = objectUrl;
+  });
 }

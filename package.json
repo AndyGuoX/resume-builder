@@ -28,9 +28,6 @@
     "vue": "^3.5.30",
     "vue-router": "^4.6.4"
   },
-  "lint-staged": {
-    "**/*.{js,ts,vue,json,css,less,md}": "prettier --write"
-  },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",

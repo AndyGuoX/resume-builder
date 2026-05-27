@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { parseInlineBold } from '../../utils/inlineBold'
+import { computed } from 'vue';
+import { parseInlineBold } from '../../utils/inlineBold';
 
 const props = defineProps<{
-  text: string
-  themeColor?: string
-}>()
+  text: string;
+  themeColor?: string;
+}>();
 
-const segments = computed(() => parseInlineBold(props.text))
+const segments = computed(() => parseInlineBold(props.text));
 const tagStyle = computed(() => ({
   '--tag-bg-color': props.themeColor ? `${props.themeColor}20` : '#fef3c7',
   '--tag-text-color': props.themeColor || '#b45309',
-}))
+}));
 </script>
 
 <template>

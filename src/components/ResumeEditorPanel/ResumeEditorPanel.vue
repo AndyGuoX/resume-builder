@@ -1,64 +1,64 @@
 <script setup lang="ts">
 /* eslint-disable vue/no-mutating-props */
-import { ref } from 'vue'
-import type { ResumeDocument } from '../../types/resume'
-import { compressImageFileToDataUrl } from '../../utils/localImage'
+import { ref } from 'vue';
+import type { ResumeDocument } from '../../types/resume';
+import { compressImageFileToDataUrl } from '../../utils/localImage';
 import {
   blockLeadingSpaceBeforeInput,
   blockLeadingSpaceKeydown,
   inputTrimLeading,
   inputTrimOnBlur,
   onPasteTrimLeading,
-} from '../../utils/inputTrim'
+} from '../../utils/inputTrim';
 
 /** 粘贴：合并后去行首空白 */
 function pasteTrim(set: (v: string) => void) {
-  return (e: Event) => onPasteTrimLeading(e as ClipboardEvent, set)
+  return (e: Event) => onPasteTrimLeading(e as ClipboardEvent, set);
 }
 
 const props = defineProps<{
-  resume: ResumeDocument
-}>()
+  resume: ResumeDocument;
+}>();
 
-const fileInputRef = ref<HTMLInputElement | null>(null)
-const avatarLoading = ref(false)
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const avatarLoading = ref(false);
 
 async function onAvatarFileChange(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  input.value = ''
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = '';
   if (!file) {
-    return
+    return;
   }
   if (file.size > 12 * 1024 * 1024) {
-    window.alert('文件过大，请选择 12MB 以内的图片')
-    return
+    window.alert('文件过大，请选择 12MB 以内的图片');
+    return;
   }
   try {
-    avatarLoading.value = true
+    avatarLoading.value = true;
     // 压缩后写入 profile，与简历一并持久化到 localStorage
-    props.resume.profile.avatarUrl = await compressImageFileToDataUrl(file)
+    props.resume.profile.avatarUrl = await compressImageFileToDataUrl(file);
   } catch (error) {
-    console.error(error)
-    window.alert(error instanceof Error ? error.message : '处理照片失败')
+    console.error(error);
+    window.alert(error instanceof Error ? error.message : '处理照片失败');
   } finally {
-    avatarLoading.value = false
+    avatarLoading.value = false;
   }
 }
 
 function clearAvatar() {
-  props.resume.profile.avatarUrl = ''
+  props.resume.profile.avatarUrl = '';
 }
 
 function openFilePicker() {
-  fileInputRef.value?.click()
+  fileInputRef.value?.click();
 }
 
 const emit = defineEmits<{
-  (event: 'add-personal-field'): void
-  (event: 'remove-personal-field', fieldIndex: number): void
-  (event: 'reset'): void
-}>()
+  (event: 'add-personal-field'): void;
+  (event: 'remove-personal-field', fieldIndex: number): void;
+  (event: 'reset'): void;
+}>();
 </script>
 
 <template>

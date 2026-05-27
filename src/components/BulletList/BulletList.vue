@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { BulletNode } from '../../types/resume'
-import BulletList from './BulletList.vue'
-import FormattedText from '../FormattedText/FormattedText.vue'
+import type { BulletNode } from '../../types/resume';
+import BulletList from './BulletList.vue';
+import FormattedText from '../FormattedText/FormattedText.vue';
 
 withDefaults(
   defineProps<{
-    nodes: BulletNode[]
-    depth?: number
-    themeColor?: string
+    nodes: BulletNode[];
+    depth?: number;
+    themeColor?: string;
   }>(),
   { depth: 0, themeColor: '' },
-)
+);
 </script>
 
 <template>
