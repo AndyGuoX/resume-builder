@@ -13,6 +13,14 @@ function handleCta() {
   }
 }
 
+function handleInterview() {
+  if (authStore.isLoggedIn) {
+    router.push('/interview');
+  } else {
+    router.push('/login');
+  }
+}
+
 function handleLogout() {
   authStore.logout();
   router.push('/');
@@ -40,6 +48,9 @@ function handleLogout() {
           <p class="hero-subtitle">填写信息，一键生成专业简历，快速导出 Word / PNG</p>
           <a-button type="primary" size="large" class="hero-cta" @click="handleCta">
             生成我的简历
+          </a-button>
+          <a-button size="large" class="hero-cta-interview" @click="handleInterview">
+            开始模拟面试 →
           </a-button>
         </div>
         <div class="hero-preview">
