@@ -9,8 +9,8 @@
 <!-- @@@auto:current-status -->
 
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 0
-- **Last Active**: -
+- **Total Sessions**: 1
+- **Last Active**: 2026-05-29
 <!-- @@@/auto:current-status -->
 
 ---
@@ -21,7 +21,7 @@
 
 | File           | Lines | Status |
 | -------------- | ----- | ------ |
-| `journal-1.md` | ~0    | Active |
+| `journal-1.md` | ~39   | Active |
 
 <!-- @@@/auto:active-documents -->
 
@@ -31,8 +31,9 @@
 
 <!-- @@@auto:session-history -->
 
-| #   | Date | Title | Commits | Branch |
-| --- | ---- | ----- | ------- | ------ |
+| #   | Date       | Title                  | Commits   | Branch  |
+| --- | ---------- | ---------------------- | --------- | ------- |
+| 1   | 2026-05-29 | 填充前端 spec 规范文档 | `09b3e78` | `dev-2` |
 
 <!-- @@@/auto:session-history -->
 
