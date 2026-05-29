@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Pinia store 使用规范，路由守卫中读取 useAuthStore"}
+{"file": ".trellis/tasks/05-29-interview-auth-guard/prd.md", "reason": "需求文档"}
