@@ -22,3 +22,11 @@ describe('style.css print fonts', () => {
     expect(styleCss).not.toMatch(/--resume-print-font-family:[^;]*Heiti SC/)
   })
 })
+
+describe('style.css print layout', () => {
+  it('keeps personal info values on one line when printing', () => {
+    expect(styleCss).toMatch(/@media print[\s\S]*\.personal-info-value[\s\S]*white-space:\s*nowrap !important/)
+    expect(styleCss).toMatch(/@media print[\s\S]*\.personal-info-value[\s\S]*overflow-wrap:\s*normal !important/)
+    expect(styleCss).toMatch(/@media print[\s\S]*\.personal-info-value[\s\S]*word-break:\s*normal !important/)
+  })
+})

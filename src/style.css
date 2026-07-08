@@ -622,6 +622,12 @@ input {
     -webkit-text-fill-color: currentColor !important;
   }
 
+  .personal-info-value {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
   /* 打印时压缩末尾冗余空隙，降低“临界溢出触发空白页”的概率 */
   .resume-header {
     margin-bottom: 16px !important;
